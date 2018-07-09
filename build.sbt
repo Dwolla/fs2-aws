@@ -91,7 +91,7 @@ lazy val fs2Utils = crossProject(JSPlatform, JVMPlatform)
 lazy val fs2UtilsJS = fs2Utils.js
 lazy val fs2UtilsJVM = fs2Utils.jvm
 
-lazy val fs2AwsUtils = (project in file("."))
+lazy val fs2AwsUtils = (project in file("main"))
   .settings(Seq(
     name := primaryName,
     bintrayPackage := primaryName,
@@ -110,4 +110,14 @@ lazy val fs2AwsUtils = (project in file("."))
     },
   ) ++ commonSettings ++ bintraySettings: _*)
   .dependsOn(fs2UtilsJVM)
-  .aggregate(fs2UtilsJVM, fs2UtilsJS)
+
+lazy val root = (project in file("."))
+  .settings(noPublishSettings: _*)
+  .aggregate(fs2UtilsJVM, fs2UtilsJS, fs2AwsUtils)
+
+lazy val noPublishSettings = Seq(
+  publish := {},
+  publishLocal := {},
+  publishArtifact := false,
+  Keys.`package` := file(""),
+)
