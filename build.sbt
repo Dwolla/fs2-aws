@@ -11,7 +11,7 @@ lazy val commonSettings = Seq(
   startYear := Option(2018),
   libraryDependencies ++= {
     Seq(
-      "co.fs2" %%% "fs2-core" % "0.10.4",
+      "co.fs2" %%% "fs2-core" % "0.10.5",
     )
   },
   dependencyOverrides ++= Seq(
@@ -98,11 +98,14 @@ lazy val fs2AwsUtils = (project in file("."))
     description := "Utility classes for interacting with the AWS SDKs from Scala using fs2",
     libraryDependencies ++= {
       val awsSdkVersion = "1.11.331"
+      val specs2Version = "4.3.0"
 
       Seq(
-        "com.amazonaws"   %  "aws-java-sdk-core"            % awsSdkVersion,
-        "com.amazonaws"   %  "aws-java-sdk-kms"             % awsSdkVersion % Provided,
-        "com.amazonaws"   %  "aws-java-sdk-cloudformation"  % awsSdkVersion % Test,
+        "com.amazonaws" % "aws-java-sdk-core" % awsSdkVersion,
+        "com.amazonaws" % "aws-java-sdk-kms" % awsSdkVersion % Provided,
+        "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion % Test,
+        "org.specs2" %% "specs2-core" % specs2Version % Test,
+        "org.specs2" %% "specs2-mock" % specs2Version % Test,
       )
     },
   ) ++ commonSettings ++ bintraySettings: _*)
