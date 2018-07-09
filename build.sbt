@@ -111,9 +111,17 @@ lazy val fs2AwsUtils = (project in file("main"))
   ) ++ commonSettings ++ bintraySettings: _*)
   .dependsOn(fs2UtilsJVM)
 
+lazy val fs2TestKit: Project = (project in file("test-kit"))
+  .settings(Seq(
+    name := primaryName + "-testkit",
+    bintrayPackage := primaryName + "-testkit",
+    description := "Test implementations of fs2-aws classes",
+  ) ++ commonSettings ++ bintraySettings: _*)
+  .dependsOn(fs2AwsUtils)
+
 lazy val root = (project in file("."))
   .settings(noPublishSettings: _*)
-  .aggregate(fs2UtilsJVM, fs2UtilsJS, fs2AwsUtils)
+  .aggregate(fs2UtilsJVM, fs2UtilsJS, fs2AwsUtils, fs2TestKit)
 
 lazy val noPublishSettings = Seq(
   publish := {},
