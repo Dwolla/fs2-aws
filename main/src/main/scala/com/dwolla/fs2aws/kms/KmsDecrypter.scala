@@ -9,7 +9,6 @@ import com.amazonaws.regions.Regions.US_WEST_2
 import com.amazonaws.services.kms._
 import com.amazonaws.services.kms.model._
 import com.dwolla.fs2aws._
-import com.dwolla.fs2aws.kms.KmsDecrypter._
 import fs2._
 
 import scala.concurrent.ExecutionContext
@@ -45,11 +44,6 @@ class KmsDecrypterImpl[F[_] : Effect](asyncClient: AWSKMSAsync)
 }
 
 object KmsDecrypter {
-  type Transform[A] = A ⇒ Array[Byte]
-
-  val noopTransform: Transform[Array[Byte]] = identity
-  val base64DecodingTransform: Transform[String] = javax.xml.bind.DatatypeConverter.parseBase64Binary
-
   def stream[F[_]](region: Regions = US_WEST_2)
                   (implicit F: Effect[F], ec: ExecutionContext): Stream[F, KmsDecrypter[F]] = {
     for {
