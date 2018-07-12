@@ -11,7 +11,7 @@ lazy val commonSettings = Seq(
   startYear := Option(2018),
   libraryDependencies ++= {
     Seq(
-      "co.fs2" %%% "fs2-core" % "0.10.4",
+      "co.fs2" %%% "fs2-core" % "0.10.5",
     )
   },
   dependencyOverrides ++= Seq(
@@ -91,20 +91,41 @@ lazy val fs2Utils = crossProject(JSPlatform, JVMPlatform)
 lazy val fs2UtilsJS = fs2Utils.js
 lazy val fs2UtilsJVM = fs2Utils.jvm
 
-lazy val fs2AwsUtils = (project in file("."))
+lazy val fs2AwsUtils = (project in file("main"))
   .settings(Seq(
     name := primaryName,
     bintrayPackage := primaryName,
     description := "Utility classes for interacting with the AWS SDKs from Scala using fs2",
     libraryDependencies ++= {
       val awsSdkVersion = "1.11.331"
+      val specs2Version = "4.3.0"
 
       Seq(
-        "com.amazonaws"   %  "aws-java-sdk-core"            % awsSdkVersion,
-        "com.amazonaws"   %  "aws-java-sdk-kms"             % awsSdkVersion % Provided,
-        "com.amazonaws"   %  "aws-java-sdk-cloudformation"  % awsSdkVersion % Test,
+        "com.amazonaws" % "aws-java-sdk-core" % awsSdkVersion,
+        "com.amazonaws" % "aws-java-sdk-kms" % awsSdkVersion % Provided,
+        "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion % Test,
+        "org.specs2" %% "specs2-core" % specs2Version % Test,
+        "org.specs2" %% "specs2-mock" % specs2Version % Test,
       )
     },
   ) ++ commonSettings ++ bintraySettings: _*)
   .dependsOn(fs2UtilsJVM)
-  .aggregate(fs2UtilsJVM, fs2UtilsJS)
+
+lazy val fs2TestKit: Project = (project in file("test-kit"))
+  .settings(Seq(
+    name := primaryName + "-testkit",
+    bintrayPackage := primaryName + "-testkit",
+    description := "Test implementations of fs2-aws classes",
+  ) ++ commonSettings ++ bintraySettings: _*)
+  .dependsOn(fs2AwsUtils)
+
+lazy val root = (project in file("."))
+  .settings(noPublishSettings: _*)
+  .aggregate(fs2UtilsJVM, fs2UtilsJS, fs2AwsUtils, fs2TestKit)
+
+lazy val noPublishSettings = Seq(
+  publish := {},
+  publishLocal := {},
+  publishArtifact := false,
+  Keys.`package` := file(""),
+)
