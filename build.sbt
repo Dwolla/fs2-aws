@@ -120,7 +120,7 @@ lazy val fs2TestKit: Project = (project in file("test-kit"))
   .dependsOn(fs2AwsUtils)
 
 lazy val root = (project in file("."))
-  .settings(noPublishSettings: _*)
+  .settings(commonSettings ++ noPublishSettings: _*)
   .aggregate(fs2UtilsJVM, fs2UtilsJS, fs2AwsUtils, fs2TestKit)
 
 lazy val noPublishSettings = Seq(
