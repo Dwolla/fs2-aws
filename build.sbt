@@ -9,13 +9,16 @@ lazy val commonSettings = Seq(
   releaseVersionBump := sbtrelease.Version.Bump.Minor,
   releaseCrossBuild := true,
   startYear := Option(2018),
+  resolvers ++= Seq(
+    Resolver.bintrayRepo("dwolla", "maven")
+  ),
   libraryDependencies ++= {
     Seq(
       "co.fs2" %%% "fs2-core" % "0.10.5",
     )
   },
   dependencyOverrides ++= Seq(
-    "org.typelevel" %%% "cats-core" % "1.1.0",
+    "org.typelevel" %%% "cats-core" % "1.2.0",
     "org.typelevel" %%% "cats-effect" % "0.10.1",
   ),
   scalacOptions := (scalaBinaryVersion.value match {
@@ -103,9 +106,10 @@ lazy val fs2AwsUtils = (project in file("main"))
       Seq(
         "com.amazonaws" % "aws-java-sdk-core" % awsSdkVersion,
         "com.amazonaws" % "aws-java-sdk-kms" % awsSdkVersion % Provided,
-        "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion % Test,
+        "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion % Provided,
         "org.specs2" %% "specs2-core" % specs2Version % Test,
         "org.specs2" %% "specs2-mock" % specs2Version % Test,
+        "com.dwolla" %% "scala-aws-utils-testkit" % "1.6.1" % Test
       )
     },
   ) ++ commonSettings ++ bintraySettings: _*)
@@ -120,7 +124,7 @@ lazy val fs2TestKit: Project = (project in file("test-kit"))
   .dependsOn(fs2AwsUtils)
 
 lazy val root = (project in file("."))
-  .settings(noPublishSettings: _*)
+  .settings(commonSettings ++ noPublishSettings: _*)
   .aggregate(fs2UtilsJVM, fs2UtilsJS, fs2AwsUtils, fs2TestKit)
 
 lazy val noPublishSettings = Seq(
