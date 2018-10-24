@@ -13,9 +13,9 @@ class PaginatedAwsClient[F[_] : Effect, Req <: PaginatedRequest, Res <: Paginate
       val req = requestFactory()
       maybeNextToken.foreach(req.setNextToken)
 
-      req.executeVia[F](awsAsyncFunction).map((res: Res) ⇒ (Segment.seq(extractor(res)), Option(res.getNextToken())))
+      req.executeVia[F](awsAsyncFunction).map((res: Res) ⇒ (Chunk.seq(extractor(res)), Option(res.getNextToken())))
     }
 
-    Pagination.offsetUnfoldSegmentEval(fetchPage)
+    Pagination.offsetUnfoldChunkEval(fetchPage)
   }
 }

@@ -11,7 +11,6 @@ import com.amazonaws.services.kms.model._
 import com.dwolla.fs2aws._
 import fs2._
 
-import scala.concurrent.ExecutionContext
 import scala.language.higherKinds
 
 trait KmsDecrypter[F[_]] {
@@ -20,8 +19,7 @@ trait KmsDecrypter[F[_]] {
   def decryptBase64(cryptoTexts: (String, String)*): Stream[F, Map[String, Array[Byte]]]
 }
 
-class KmsDecrypterImpl[F[_] : Effect](asyncClient: AWSKMSAsync)
-                                     (implicit ec: ExecutionContext) extends KmsDecrypter[F] {
+class KmsDecrypterImpl[F[_] : ConcurrentEffect](asyncClient: AWSKMSAsync) extends KmsDecrypter[F] {
 
   def decrypt[A](transformer: Transform[A], cryptoText: A): F[Array[Byte]] = new DecryptRequest()
     .withCiphertextBlob(ByteBuffer.wrap(transformer(cryptoText)))
@@ -34,7 +32,7 @@ class KmsDecrypterImpl[F[_] : Effect](asyncClient: AWSKMSAsync)
         case (name, cryptoText) ⇒ decrypt(transform, cryptoText).map(name → _)
       }
       .map(Stream.eval)
-      .join(10)
+      .parJoin(10)
       .fold(Map.empty[String, Array[Byte]]) {
         case (map, tuple) ⇒ map + tuple
       }
@@ -44,10 +42,8 @@ class KmsDecrypterImpl[F[_] : Effect](asyncClient: AWSKMSAsync)
 }
 
 object KmsDecrypter {
-  def stream[F[_]](region: Regions = US_WEST_2)
-                  (implicit F: Effect[F], ec: ExecutionContext): Stream[F, KmsDecrypter[F]] = {
+  def stream[F[_] : ConcurrentEffect](region: Regions = US_WEST_2): Stream[F, KmsDecrypter[F]] =
     for {
-      client ← Stream.bracket(F.delay(AWSKMSAsyncClientBuilder.standard().withRegion(region).build()))(Stream.emit(_), c ⇒ F.delay(c.shutdown()))
+      client ← Stream.bracket(Sync[F].delay(AWSKMSAsyncClientBuilder.standard().withRegion(region).build()))(c ⇒ Sync[F].delay(c.shutdown()))
     } yield new KmsDecrypterImpl[F](client)
-  }
 }

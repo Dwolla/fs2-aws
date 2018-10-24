@@ -3,7 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.crossProject
 
 lazy val primaryName = "fs2-aws"
 lazy val specs2Version = "4.3.5"
-lazy val fs2Version = "0.10.5"
+lazy val fs2Version = "1.0.2"
 
 lazy val commonSettings = Seq(
   organization := "com.dwolla",
@@ -18,11 +18,14 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= {
     Seq(
       "co.fs2" %%% "fs2-core" % fs2Version,
+      "org.specs2" %%% "specs2-core" % specs2Version % Test,
+      "org.specs2" %%% "specs2-cats" % specs2Version % Test,
     )
   },
   dependencyOverrides ++= Seq(
-    "org.typelevel" %%% "cats-core" % "1.4.0",
-    "org.typelevel" %%% "cats-effect" % "0.10.1",
+    "org.typelevel" %%% "cats-core" % "1.5.0",
+    "org.typelevel" %%% "cats-effect" % "1.1.0",
+    "commons-logging" % "commons-logging" % "1.2",
   ),
 )
 
@@ -41,12 +44,9 @@ lazy val fs2Utils = crossProject(JSPlatform, JVMPlatform)
     name := "fs2-utils",
     bintrayPackage := "fs2-utils",
     description := "Helpful utility functions for fs2 streams",
-    libraryDependencies ++= {
-      Seq(
-        "org.specs2" %% "specs2-core" % specs2Version % Test,
-      )
-    }
   ) ++ commonSettings ++ bintraySettings: _*)
+
+lazy val fs2UtilsJVM = fs2Utils.jvm
 
 lazy val fs2AwsUtils = (project in file("main"))
   .settings(Seq(
@@ -63,13 +63,12 @@ lazy val fs2AwsUtils = (project in file("main"))
         "com.amazonaws" % "aws-java-sdk-kms" % awsSdkVersion % Provided,
         "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion % Provided,
         "com.amazonaws" % "aws-java-sdk-s3" % awsSdkVersion % Provided,
-        "org.specs2" %% "specs2-core" % specs2Version % Test,
         "org.specs2" %% "specs2-mock" % specs2Version % Test,
         "com.dwolla" %% "scala-aws-utils-testkit" % "1.6.1" % Test
       )
     },
   ) ++ commonSettings ++ bintraySettings: _*)
-  .dependsOn(fs2Utils.jvm)
+  .dependsOn(fs2UtilsJVM)
 
 lazy val fs2TestKit: Project = (project in file("test-kit"))
   .settings(Seq(
@@ -81,7 +80,7 @@ lazy val fs2TestKit: Project = (project in file("test-kit"))
 
 lazy val `fs2-aws` = (project in file("."))
   .settings(commonSettings ++ noPublishSettings: _*)
-  .aggregate(fs2Utils.jvm, fs2Utils.js, fs2AwsUtils, fs2TestKit)
+  .aggregate(fs2UtilsJVM, fs2Utils.js, fs2AwsUtils, fs2TestKit)
 
 lazy val noPublishSettings = Seq(
   publish := {},

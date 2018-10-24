@@ -15,7 +15,7 @@ This library is essentially Dwolla’s [scala-aws-utils](https://github.com/Dwol
 #### Library
 
 ```scala
-"com.dwolla" %% "fs2-aws" % "1.0.0"
+"com.dwolla" %% "fs2-aws" % "2.0.0"
 ```
 
 #### Core
@@ -25,13 +25,13 @@ Non-AWS-specific utilities are published separately for the JVM and Scala.js.
 ##### JVM
 
 ```scala
-"com.dwolla" %% "fs2-utils" % "1.0.0"
+"com.dwolla" %% "fs2-utils" % "2.0.0"
 ```
 
 ##### JS
 
 ```scala
-"com.dwolla" %%% "fs2-utils" % "1.0.0"
+"com.dwolla" %%% "fs2-utils" % "2.0.0"
 ```
 
 ## Examples
