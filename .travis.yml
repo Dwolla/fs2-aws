@@ -2,7 +2,7 @@ language: scala
 
 scala:
   - 2.11.12
-  - 2.12.6
+  - 2.12.7
 
 jdk: oraclejdk8
 
@@ -22,5 +22,5 @@ deploy:
     script: .travis/release.sh
     on:
       branch: master
-      scala: 2.12.6
+      scala: 2.12.7
       condition: $(git log -n1 --format=format:"%an") != "Dwolla Bot"
