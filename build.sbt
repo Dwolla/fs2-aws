@@ -2,6 +2,8 @@ import sbtcrossproject.CrossType // needed until Scala.js 1.0 is released
 import sbtcrossproject.CrossPlugin.autoImport.crossProject
 
 lazy val primaryName = "fs2-aws"
+lazy val specs2Version = "4.3.5"
+lazy val fs2Version = "0.10.5"
 
 lazy val commonSettings = Seq(
   organization := "com.dwolla",
@@ -15,7 +17,7 @@ lazy val commonSettings = Seq(
   ),
   libraryDependencies ++= {
     Seq(
-      "co.fs2" %%% "fs2-core" % "0.10.5",
+      "co.fs2" %%% "fs2-core" % fs2Version,
     )
   },
   dependencyOverrides ++= Seq(
@@ -30,8 +32,6 @@ lazy val bintraySettings = Seq(
   bintrayOrganization := Option("dwolla"),
   pomIncludeRepository := { _ ⇒ false }
 )
-
-lazy val specs2Version = "4.3.0"
 
 lazy val fs2Utils = crossProject(JSPlatform, JVMPlatform)
   .withoutSuffixFor(JVMPlatform)
@@ -57,6 +57,8 @@ lazy val fs2AwsUtils = (project in file("main"))
       val awsSdkVersion = "1.11.437"
 
       Seq(
+        "co.fs2" %% "fs2-io" % fs2Version,
+        "com.chuusai" %% "shapeless" % "2.3.3",
         "com.amazonaws" % "aws-java-sdk-core" % awsSdkVersion,
         "com.amazonaws" % "aws-java-sdk-kms" % awsSdkVersion % Provided,
         "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion % Provided,
