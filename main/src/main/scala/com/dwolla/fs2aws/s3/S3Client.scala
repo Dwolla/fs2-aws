@@ -12,6 +12,8 @@ import scala.concurrent.ExecutionContext
 
 trait S3Client[F[_]] {
   def uploadSink(bucket: Bucket, key: Key, objectMetadata: ObjectMetadata): Sink[F, Byte]
+  def downloadObject(bucket: Bucket, key: Key): Stream[F, Byte]
+  def deleteObject(bucket: Bucket, key: Key): Stream[F, Unit]
 }
 
 object S3Client {
@@ -19,21 +21,28 @@ object S3Client {
     Stream.bracket(Sync[F].delay(TransferManagerBuilder.defaultTransferManager()))(tm ⇒ Stream.emit(new S3ClientImpl[F](tm)), tm ⇒ Sync[F].delay(tm.shutdownNow()))
 
   class S3ClientImpl[F[_] : Effect] private[s3](transferManager: TransferManager)
-                                               (implicit ec: ExecutionContext) extends S3Client[F] {
+    (implicit ec: ExecutionContext) extends S3Client[F] {
     override def uploadSink(bucket: Bucket,
-                            key: Key,
-                            objectMetadata: ObjectMetadata
-                           ): Sink[F, Byte] = (s: Stream[F, Byte]) ⇒
+      key: Key,
+      objectMetadata: ObjectMetadata
+    ): Sink[F, Byte] = (s: Stream[F, Byte]) ⇒
       for {
         is ← s.through(io.toInputStream)
         uploadRequest = new PutObjectRequest(bucket, key, is, objectMetadata)
         _ ← upload(uploadRequest)
       } yield ()
 
+    override def downloadObject(bucket: Bucket, key: Key): Stream[F, Byte] =
+      io.readInputStream(Sync[F].delay(transferManager.getAmazonS3Client.getObject(bucket, key).getObjectContent), 128)
+
+    override def deleteObject(bucket: Bucket, key: Key): Stream[F, Unit] =
+      Stream.eval(Sync[F].delay(transferManager.getAmazonS3Client.deleteObject(bucket, key)))
+
     private def upload(req: PutObjectRequest): Stream[F, Unit] =
       Stream.eval(Async[F].async[Unit] { cb ⇒
         transferManager.upload(req, new S3ProgressListener() {
           private def success(): Unit = cb(Right(()))
+
           private def failure(ex: Exception): Unit = cb(Left(ex))
 
           override def onPersistableTransfer(pt: PersistableTransfer): Unit = ()
