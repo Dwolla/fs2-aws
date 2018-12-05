@@ -32,4 +32,5 @@ if [ "$TRAVIS_COMMIT" != "$MASTER" ]; then
   exit 0
 fi
 
-sbt clean "release with-defaults"
+echo "Not releasing due to milestone version"
+# sbt clean "release with-defaults"
