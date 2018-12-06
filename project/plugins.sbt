@@ -5,4 +5,4 @@ addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "0.6.0")
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.25")
 
 resolvers += Resolver.bintrayIvyRepo("dwolla", "sbt-plugins")
-addSbtPlugin("com.dwolla.sbt" % "sbt-dwolla-base" % "1.1.1")
+addSbtPlugin("com.dwolla.sbt" % "sbt-dwolla-base" % "1.2.0")
