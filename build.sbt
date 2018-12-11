@@ -37,8 +37,7 @@ lazy val bintraySettings = Seq(
 )
 
 lazy val fs2Utils = crossProject(JSPlatform, JVMPlatform)
-  .withoutSuffixFor(JVMPlatform)
-  .crossType(CrossType.Pure)
+  .crossType(CrossType.Full)
   .in(file("core"))
   .settings(Seq(
     name := "fs2-utils",
