@@ -39,6 +39,13 @@ lazy val bintraySettings = Seq(
 lazy val fs2Utils = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
   .in(file("core"))
+  .jvmSettings(Seq(
+    libraryDependencies ++= {
+      Seq(
+        "commons-codec" % "commons-codec" % "1.11" % Test,
+      )
+    }
+  ): _*)
   .settings(Seq(
     name := "fs2-utils",
     bintrayPackage := "fs2-utils",
