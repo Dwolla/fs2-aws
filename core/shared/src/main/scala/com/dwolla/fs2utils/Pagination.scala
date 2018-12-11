@@ -1,7 +1,6 @@
 package com.dwolla.fs2utils
 
 import cats._
-import cats.data._
 import cats.implicits._
 import fs2._
 
@@ -28,7 +27,4 @@ object Pagination {
       case NoMorePages() ⇒ F.pure(None)
     }
   }
-
-  def offsetUnfoldEval[F[_] : Applicative, S, O](f: Option[S] ⇒ F[(O, Option[S])]): Stream[F, O] =
-    offsetUnfoldChunkEval(Kleisli(f).map(tuple ⇒ (Chunk(tuple._1), tuple._2)).run)
 }
