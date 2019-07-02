@@ -3,7 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.crossProject
 
 lazy val primaryName = "fs2-aws"
 lazy val specs2Version = "4.3.5"
-lazy val fs2Version = "1.0.2"
+lazy val fs2Version = "1.0.5"
 
 lazy val commonSettings = Seq(
   organization := "com.dwolla",
@@ -23,8 +23,8 @@ lazy val commonSettings = Seq(
     )
   },
   dependencyOverrides ++= Seq(
-    "org.typelevel" %%% "cats-core" % "1.5.0",
-    "org.typelevel" %%% "cats-effect" % "1.1.0",
+    "org.typelevel" %%% "cats-core" % "1.6.1",
+    "org.typelevel" %%% "cats-effect" % "1.3.1",
     "commons-logging" % "commons-logging" % "1.2",
   ),
 )
