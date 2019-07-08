@@ -73,7 +73,7 @@ class S3ClientSpec(implicit ee: ExecutionEnv) extends Specification with Matcher
         om ← objectMetadata
         client: S3Client[IO] = new S3ClientImpl[IO](tm)
 
-        fiber ← Concurrent[IO].start(Stream.emits(expectedBytes).covary[IO].to(client.uploadSink(bucket, key, om)).compile.drain)
+        fiber ← Concurrent[IO].start(Stream.emits(expectedBytes).covary[IO].through(client.uploadSink(bucket, key, om)).compile.drain)
 
         (putObjectRequest, s3ProgressListener) <- deferredUploadArguments.get
         passedBytes ← io.readInputStream(IO(putObjectRequest.getInputStream), 16, ee.ec).compile.toList

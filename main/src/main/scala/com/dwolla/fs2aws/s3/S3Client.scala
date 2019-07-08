@@ -15,22 +15,31 @@ import scala.concurrent.ExecutionContext
 
 trait S3Client[F[_]] {
   def listBucket(bucket: Bucket): Stream[F, Key]
-  def uploadSink(bucket: Bucket, key: Key, objectMetadata: ObjectMetadata): Sink[F, Byte]
+  def uploadSink(bucket: Bucket, key: Key, objectMetadata: ObjectMetadata): Pipe[F, Byte, Unit]
   def downloadObject(bucket: Bucket, key: Key, blockingExecutionContext: ExecutionContext): Stream[F, Byte]
   def deleteObject(bucket: Bucket, key: Key): Stream[F, Unit]
 }
 
 object S3Client {
+  def resource[F[_] : ConcurrentEffect : ContextShift]: Resource[F, S3Client[F]] =
+    Resource
+      .make(acquireTransferManager[F])(shutdown[F])
+      .map(new S3ClientImpl[F](_))
+
   def stream[F[_] : ConcurrentEffect : ContextShift]: Stream[F, S3Client[F]] =
-    for {
-      tm ← Stream.bracket(Sync[F].delay(TransferManagerBuilder.defaultTransferManager()))(tm ⇒ Sync[F].delay(tm.shutdownNow()))
-    } yield new S3ClientImpl[F](tm)
+    Stream.resource(S3Client.resource[F])
+
+  private def acquireTransferManager[F[_] : Sync]: F[TransferManager] =
+    Sync[F].delay(TransferManagerBuilder.defaultTransferManager())
+
+  private def shutdown[F[_] : Sync](tm: TransferManager): F[Unit] =
+    Sync[F].delay(tm.shutdownNow())
 
   class S3ClientImpl[F[_] : ConcurrentEffect : ContextShift] private[s3](transferManager: TransferManager) extends S3Client[F] {
     override def uploadSink(bucket: Bucket,
                             key: Key,
                             objectMetadata: ObjectMetadata
-                           ): Sink[F, Byte] = (s: Stream[F, Byte]) ⇒
+                           ): Pipe[F, Byte, Unit] = (s: Stream[F, Byte]) ⇒
       for {
         is ← s.through(io.toInputStream)
         uploadRequest = new PutObjectRequest(bucket, key, is, objectMetadata)
