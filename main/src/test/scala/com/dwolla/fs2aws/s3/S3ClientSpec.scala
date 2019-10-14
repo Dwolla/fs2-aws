@@ -28,12 +28,14 @@ class S3ClientSpec(implicit ee: ExecutionEnv) extends Specification with Matcher
 
   implicit val cs = IO.contextShift(ee.executionContext)
 
+  val blocker = Blocker.liftExecutionContext(ee.executionContext)
+
   trait setup extends Scope {
 
     val tm = mock[TransferManager]
     val mockS3 = mock[AmazonS3]
     when(tm.getAmazonS3Client).thenReturn(mockS3)
-    val client = new S3ClientImpl[IO](tm)
+    val client = new S3ClientImpl[IO](tm, blocker)
     val bucket = tagBucket("bucket")
     val key = tagKey("key")
     val expectedContentType = "text/x-shellscript"
@@ -71,12 +73,12 @@ class S3ClientSpec(implicit ee: ExecutionEnv) extends Specification with Matcher
           } yield ()
         })
         om ← objectMetadata
-        client: S3Client[IO] = new S3ClientImpl[IO](tm)
+        client: S3Client[IO] = new S3ClientImpl[IO](tm, blocker)
 
         fiber ← Concurrent[IO].start(Stream.emits(expectedBytes).covary[IO].through(client.uploadSink(bucket, key, om)).compile.drain)
 
         (putObjectRequest, s3ProgressListener) <- deferredUploadArguments.get
-        passedBytes ← io.readInputStream(IO(putObjectRequest.getInputStream), 16, ee.ec).compile.toList
+        passedBytes ← io.readInputStream(IO(putObjectRequest.getInputStream), 16, blocker).compile.toList
 
         _ ← IO(s3ProgressListener.progressChanged(new ProgressEvent(ProgressEventType.TRANSFER_COMPLETED_EVENT)))
         _ ← fiber.join
@@ -94,7 +96,7 @@ class S3ClientSpec(implicit ee: ExecutionEnv) extends Specification with Matcher
       when(mockS3.getObject(bucket, key)).thenReturn(obj)
       when(obj.getObjectContent).thenReturn(new S3ObjectInputStream(new ByteArrayInputStream(expected), mock[HttpRequestBase]))
 
-      client.downloadObject(bucket, key, ee.ec).compile.toList must returnValue(equalTo(expected.toList))
+      client.downloadObject(bucket, key).compile.toList must returnValue(equalTo(expected.toList))
     }
 
     "delete object from the given S3 location" in new setup {

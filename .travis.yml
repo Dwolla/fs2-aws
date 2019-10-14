@@ -2,16 +2,15 @@ language: scala
 
 scala:
   - 2.11.12
-  - 2.12.8
+  - 2.12.10
+# Specs2 isn't available on ScalaJS yet, on a version published for 2.13 :-(
+#  - 2.13.1
 
-jdk: oraclejdk8
+jdk: openjdk8
 
 env:
   global:
     - secure: "KEFHXhXoVJ36CN//n3295Zh3QGS3cx54YicwdbThfILGvdqRW+XZ8oEkyDRmXVn3CStpeI+SCdEbUOYbiY6M09Rj0RK+J1M5nTr+eyWTFUMtnogpOKdnGho9o3f24AiUphGlQCWqTMX61jgSkhary5j29oIqto/KtTN0nrGWqC4Gj7E+HjzygdNS6jK/jzQLN43Q0RfOZlRZSYQEbslcq1qKj61yoJTJUZA3kvrcW1KMh4VoCrOhsMgitxgTst4LcmWAOo51RVvNGl4jrM4VytSnbDZ9OatoHUcE62MZrRmaohwE3O8Ae6e+dCGQHD8ElrRq3yrDt5kNj/D4Rp8/8jnNNM3YN2u7D2Rm3PvOBGHACKb9VvwN7VLzg+042rZ46f/pELygE/MsjMx8FvSsmlWugtAIgJOCMo7QJTIqbixowdoQOo0fFXnAx3tcw2gkwDaeF011O+jw6Mh/WdR10FadtqCVsEDYQt3jpmWj5mwDMBUfddZkUK9+0N3620Z9ATKSgOZja56OYDDZ7tLQAlukjUcpa3j9gs8lFozb1DZPqyI7I3tUyZ2Nqz/LSjycU4OCK+y9C5gVYhC9R403dCP3YoI3rF61SSbPeRAKcF2a+vDh9mRdgAL2t9smKoc8aueKltknA4xJ0NTCSLddvc87Wtktu7k7GzON0ric0Es="
-
-before_script:
-  - jdk_switcher use $JDK
 
 before_deploy:
   - mkdir -p $HOME/.bintray
@@ -22,5 +21,5 @@ deploy:
     script: .travis/release.sh
     on:
       branch: 2.x
-      scala: 2.12.8
+      scala: 2.12.10
       condition: $(git log -n1 --format=format:"%an") != "Dwolla Bot"

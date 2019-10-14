@@ -3,7 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.crossProject
 
 lazy val primaryName = "fs2-aws"
 lazy val specs2Version = "4.3.5"
-lazy val fs2Version = "1.0.5"
+lazy val fs2Version = "2.0.1"
 
 lazy val commonSettings = Seq(
   organization := "com.dwolla",
@@ -22,9 +22,12 @@ lazy val commonSettings = Seq(
       "org.specs2" %%% "specs2-cats" % specs2Version % Test,
     )
   },
+  resolvers += Resolver.sonatypeRepo("releases"),
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
+  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
   dependencyOverrides ++= Seq(
-    "org.typelevel" %%% "cats-core" % "1.6.1",
-    "org.typelevel" %%% "cats-effect" % "1.3.1",
+    "org.typelevel" %%% "cats-core" % "2.0.0",
+    "org.typelevel" %%% "cats-effect" % "2.0.0",
     "commons-logging" % "commons-logging" % "1.2",
   ),
 )

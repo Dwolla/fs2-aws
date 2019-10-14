@@ -11,20 +11,24 @@ import com.dwolla.fs2utils.Pagination
 import fs2.{io, _}
 
 import scala.collection.JavaConverters._
-import scala.concurrent.ExecutionContext
 
 trait S3Client[F[_]] {
+  val blocker: Blocker
   def listBucket(bucket: Bucket): Stream[F, Key]
   def uploadSink(bucket: Bucket, key: Key, objectMetadata: ObjectMetadata): Pipe[F, Byte, Unit]
-  def downloadObject(bucket: Bucket, key: Key, blockingExecutionContext: ExecutionContext): Stream[F, Byte]
+  def downloadObject(bucket: Bucket, key: Key): Stream[F, Byte]
   def deleteObject(bucket: Bucket, key: Key): Stream[F, Unit]
 }
 
 object S3Client {
   def resource[F[_] : ConcurrentEffect : ContextShift]: Resource[F, S3Client[F]] =
-    Resource
-      .make(acquireTransferManager[F])(shutdown[F])
-      .map(new S3ClientImpl[F](_))
+    resource[F](None)
+
+  def resource[F[_] : ConcurrentEffect : ContextShift](blocker: Option[Blocker] = None): Resource[F, S3Client[F]] =
+    for {
+      blocker <- blocker.fold(Blocker[F])(Resource.pure[F, Blocker](_))
+      transferManager <- Resource.make(acquireTransferManager[F])(shutdown[F])
+    } yield new S3ClientImpl[F](transferManager, blocker)
 
   def stream[F[_] : ConcurrentEffect : ContextShift]: Stream[F, S3Client[F]] =
     Stream.resource(S3Client.resource[F])
@@ -35,7 +39,7 @@ object S3Client {
   private def shutdown[F[_] : Sync](tm: TransferManager): F[Unit] =
     Sync[F].delay(tm.shutdownNow())
 
-  class S3ClientImpl[F[_] : ConcurrentEffect : ContextShift] private[s3](transferManager: TransferManager) extends S3Client[F] {
+  class S3ClientImpl[F[_] : ConcurrentEffect : ContextShift] private[s3](transferManager: TransferManager, val blocker: Blocker) extends S3Client[F] {
     override def uploadSink(bucket: Bucket,
                             key: Key,
                             objectMetadata: ObjectMetadata
@@ -46,8 +50,8 @@ object S3Client {
         _ ← upload(uploadRequest)
       } yield ()
 
-    override def downloadObject(bucket: Bucket, key: Key, blockingExecutionContext: ExecutionContext): Stream[F, Byte] =
-      io.readInputStream(Sync[F].delay(transferManager.getAmazonS3Client.getObject(bucket, key).getObjectContent), 128, blockingExecutionContext)
+    override def downloadObject(bucket: Bucket, key: Key): Stream[F, Byte] =
+      io.readInputStream(Sync[F].delay(transferManager.getAmazonS3Client.getObject(bucket, key).getObjectContent), chunkSize = 128, blocker)
 
     override def deleteObject(bucket: Bucket, key: Key): Stream[F, Unit] =
       Stream.eval(Sync[F].delay(transferManager.getAmazonS3Client.deleteObject(bucket, key)))
