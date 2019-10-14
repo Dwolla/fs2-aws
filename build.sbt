@@ -72,6 +72,21 @@ lazy val fs2AwsUtils = (project in file("main"))
   ) ++ commonSettings ++ bintraySettings: _*)
   .dependsOn(fs2UtilsJVM)
 
+lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
+  .settings(Seq(
+    name := primaryName + "-java-sdk2",
+    bintrayPackage := primaryName + "-java-sdk2",
+    description := "Utility classes for interacting with the V2 AWS Java SDKs from Scala using fs2",
+    libraryDependencies ++= {
+
+      Seq(
+        "co.fs2" %% "fs2-reactive-streams" % fs2Version,
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.1",
+        "software.amazon.awssdk" % "kms" % "2.7.18" % Provided,
+      )
+    },
+  ) ++ commonSettings ++ bintraySettings: _*)
+
 lazy val fs2TestKit: Project = (project in file("test-kit"))
   .settings(Seq(
     name := primaryName + "-testkit",
@@ -82,7 +97,7 @@ lazy val fs2TestKit: Project = (project in file("test-kit"))
 
 lazy val `fs2-aws` = (project in file("."))
   .settings(commonSettings ++ noPublishSettings: _*)
-  .aggregate(fs2UtilsJVM, fs2Utils.js, fs2AwsUtils, fs2TestKit)
+  .aggregate(fs2UtilsJVM, fs2Utils.js, fs2AwsUtils, fs2Aws2Utils, fs2TestKit)
 
 lazy val noPublishSettings = Seq(
   publish := {},
