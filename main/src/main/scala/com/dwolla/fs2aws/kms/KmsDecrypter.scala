@@ -27,12 +27,12 @@ class KmsDecrypterImpl[F[_] : Concurrent](asyncClient: AWSKMSAsync) extends KmsD
   def decrypt[A](transform: Transform[A], cryptoTexts: (String, A)*): Stream[F, Map[String, Array[Byte]]] =
     Stream.emits(cryptoTexts)
       .map {
-        case (name, cryptoText) ⇒ decrypt(transform, cryptoText).map(name → _)
+        case (name, cryptoText) => decrypt(transform, cryptoText).map(name -> _)
       }
       .map(Stream.eval)
       .parJoin(10)
       .fold(Map.empty[String, Array[Byte]]) {
-        case (map, tuple) ⇒ map + tuple
+        case (map, tuple) => map + tuple
       }
 
   def decryptBase64(cryptoTexts: (String, String)*): Stream[F, Map[String, Array[Byte]]] =

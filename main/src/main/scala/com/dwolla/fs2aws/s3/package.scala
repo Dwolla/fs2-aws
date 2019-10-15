@@ -14,9 +14,9 @@ package object s3 {
   type Prefix = String @@ PrefixTag
   type Key = String @@ KeyTag
 
-  val tagBucket: String ⇒ Bucket = tag[BucketTag][String]
-  val tagPrefix: String ⇒ Prefix = tag[PrefixTag][String]
-  val tagKey: String ⇒ Key = tag[KeyTag][String]
+  val tagBucket: String => Bucket = tag[BucketTag][String]
+  val tagPrefix: String => Prefix = tag[PrefixTag][String]
+  val tagKey: String => Key = tag[KeyTag][String]
 
   implicit class EnhancedPrefix(val prefix: Prefix) extends AnyVal {
     def /(id: String): Key = tagKey(s"$prefix/$id")

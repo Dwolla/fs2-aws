@@ -43,11 +43,11 @@ object S3Client {
     override def uploadSink(bucket: Bucket,
                             key: Key,
                             objectMetadata: ObjectMetadata
-                           ): Pipe[F, Byte, Unit] = (s: Stream[F, Byte]) ⇒
+                           ): Pipe[F, Byte, Unit] = (s: Stream[F, Byte]) =>
       for {
-        is ← s.through(io.toInputStream)
+        is <- s.through(io.toInputStream)
         uploadRequest = new PutObjectRequest(bucket, key, is, objectMetadata)
-        _ ← upload(uploadRequest)
+        _ <- upload(uploadRequest)
       } yield ()
 
     override def downloadObject(bucket: Bucket, key: Key): Stream[F, Byte] =
@@ -57,7 +57,7 @@ object S3Client {
       Stream.eval(Sync[F].delay(transferManager.getAmazonS3Client.deleteObject(bucket, key)))
 
     private def upload(req: PutObjectRequest): Stream[F, Unit] =
-      Stream.eval(Async[F].async[Unit] { cb ⇒
+      Stream.eval(Async[F].async[Unit] { cb =>
         transferManager.upload(req, new S3ProgressListener() {
           private def success(): Unit = cb(Right(()))
 
@@ -67,10 +67,10 @@ object S3Client {
 
           override def progressChanged(event: ProgressEvent): Unit =
             event.getEventType match {
-              case TRANSFER_COMPLETED_EVENT ⇒ success()
-              case TRANSFER_FAILED_EVENT ⇒ failure(TransferFailedEventException)
-              case TRANSFER_CANCELED_EVENT ⇒ failure(TransferCanceledEventException)
-              case _ ⇒ ()
+              case TRANSFER_COMPLETED_EVENT => success()
+              case TRANSFER_FAILED_EVENT => failure(TransferFailedEventException)
+              case TRANSFER_CANCELED_EVENT => failure(TransferCanceledEventException)
+              case _ => ()
             }
         })
 

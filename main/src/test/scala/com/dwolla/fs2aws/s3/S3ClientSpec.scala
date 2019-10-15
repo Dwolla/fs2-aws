@@ -54,7 +54,7 @@ class S3ClientSpec(implicit ee: ExecutionEnv) extends Specification with Matcher
 
       for {
         deferredUploadArguments <- Deferred[IO, (PutObjectRequest, S3ProgressListener)]
-        tm ← mockTransferManager.flatTap(tm ⇒ IO.asyncF[Unit] { mockSetupComplete =>
+        tm <- mockTransferManager.flatTap(tm => IO.asyncF[Unit] { mockSetupComplete =>
           for {
             arguments <- IO.async[(PutObjectRequest, S3ProgressListener)] { captureArguments =>
               tm.upload(any[PutObjectRequest], any[S3ProgressListener]) answers ((arr: Array[AnyRef]) =>
@@ -72,16 +72,16 @@ class S3ClientSpec(implicit ee: ExecutionEnv) extends Specification with Matcher
             _ <- deferredUploadArguments.complete(arguments)
           } yield ()
         })
-        om ← objectMetadata
+        om <- objectMetadata
         client: S3Client[IO] = new S3ClientImpl[IO](tm, blocker)
 
-        fiber ← Concurrent[IO].start(Stream.emits(expectedBytes).covary[IO].through(client.uploadSink(bucket, key, om)).compile.drain)
+        fiber <- Concurrent[IO].start(Stream.emits(expectedBytes).covary[IO].through(client.uploadSink(bucket, key, om)).compile.drain)
 
         (putObjectRequest, s3ProgressListener) <- deferredUploadArguments.get
-        passedBytes ← io.readInputStream(IO(putObjectRequest.getInputStream), 16, blocker).compile.toList
+        passedBytes <- io.readInputStream(IO(putObjectRequest.getInputStream), 16, blocker).compile.toList
 
-        _ ← IO(s3ProgressListener.progressChanged(new ProgressEvent(ProgressEventType.TRANSFER_COMPLETED_EVENT)))
-        _ ← fiber.join
+        _ <- IO(s3ProgressListener.progressChanged(new ProgressEvent(ProgressEventType.TRANSFER_COMPLETED_EVENT)))
+        _ <- fiber.join
       } yield {
         putObjectRequest.getBucketName must_== "bucket"
         putObjectRequest.getKey must_== "key"

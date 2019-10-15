@@ -29,11 +29,11 @@ class CloudFormationClientSpec(implicit ee: ExecutionEnv) extends Specification 
     new UpdateStackResult().withStackId("updated-stack-id") completes mockAsyncClient.updateStackAsync
 
     Map(
-      new DescribeStacksRequest() → Right(new DescribeStacksResult()
+      new DescribeStacksRequest() -> Right(new DescribeStacksResult()
         .withNextToken("next-token")
         .withStacks(new Stack().withStackId("diff-stack-id").withStackName("diff-stack-name").withStackStatus(UPDATE_COMPLETE))
       ),
-      new DescribeStacksRequest().withNextToken("next-token") → Right(new DescribeStacksResult()
+      new DescribeStacksRequest().withNextToken("next-token") -> Right(new DescribeStacksResult()
         .withStacks(new Stack().withStackId("stack-id").withStackName("stack-name").withStackStatus(UPDATE_COMPLETE))
       )
     ) completes mockAsyncClient.describeStacksAsync
@@ -78,7 +78,7 @@ class CloudFormationClientSpec(implicit ee: ExecutionEnv) extends Specification 
       there was no(mockAsyncClient).updateStackAsync(any[UpdateStackRequest], any[AsyncHandler[UpdateStackRequest, UpdateStackResult]])
       there was no(mockAsyncClient).createStackAsync(any[CreateStackRequest], any[AsyncHandler[CreateStackRequest, CreateStackResult]])
 
-      requestCaptor.value must beLike { case req ⇒
+      requestCaptor.value must beLike { case req =>
         req.getChangeSetName must_== "change-set-name"
         req.getChangeSetType must_== "UPDATE"
       }
@@ -105,7 +105,7 @@ class CloudFormationClientSpec(implicit ee: ExecutionEnv) extends Specification 
       there was no(mockAsyncClient).createStackAsync(any[CreateStackRequest], any[AsyncHandler[CreateStackRequest, CreateStackResult]])
       there was no(mockAsyncClient).updateStackAsync(any[UpdateStackRequest], any[AsyncHandler[UpdateStackRequest, UpdateStackResult]])
 
-      requestCaptor.value must beLike { case req ⇒
+      requestCaptor.value must beLike { case req =>
         req.getChangeSetName must_== "change-set-name"
         req.getChangeSetType must_== "CREATE"
       }

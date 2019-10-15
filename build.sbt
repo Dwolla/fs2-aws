@@ -36,7 +36,7 @@ lazy val bintraySettings = Seq(
   bintrayVcsUrl := homepage.value.map(_.toString),
   bintrayRepository := "maven",
   bintrayOrganization := Option("dwolla"),
-  pomIncludeRepository := { _ ⇒ false }
+  pomIncludeRepository := { _ => false }
 )
 
 lazy val fs2Utils = crossProject(JSPlatform, JVMPlatform)

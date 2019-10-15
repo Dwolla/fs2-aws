@@ -10,7 +10,7 @@ import scala.collection.JavaConverters._
 
 class FetchAllTest {
 
-  val requestFactory = () ⇒ new DescribeStackEventsRequest()
+  val requestFactory = () => new DescribeStackEventsRequest()
 
   val client: AmazonCloudFormationAsync = new FakeAmazonCloudFormationAsyncClient
 

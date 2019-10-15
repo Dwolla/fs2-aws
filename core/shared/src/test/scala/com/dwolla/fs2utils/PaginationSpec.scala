@@ -7,8 +7,8 @@ import org.specs2.mutable.Specification
 
 class PaginationSpec extends Specification with IOMatchers {
 
-  val unfoldFunction: Option[Int] ⇒ IO[(Chunk[Int], Option[Int])] =
-    nextToken ⇒ {
+  val unfoldFunction: Option[Int] => IO[(Chunk[Int], Option[Int])] =
+    nextToken => {
       val offset = nextToken.fold(0)(identity)
       val ints = (3 * offset) until (3 * offset + 3)
 
