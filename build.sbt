@@ -2,7 +2,7 @@ import sbtcrossproject.CrossType // needed until Scala.js 1.0 is released
 import sbtcrossproject.CrossPlugin.autoImport.crossProject
 
 lazy val primaryName = "fs2-aws"
-lazy val specs2Version = "4.3.5"
+lazy val specs2Version = "4.8.0"
 lazy val fs2Version = "2.0.1"
 
 lazy val commonSettings = Seq(
@@ -61,12 +61,12 @@ lazy val fs2AwsUtils = (project in file("main"))
       Seq(
         "co.fs2" %% "fs2-io" % fs2Version,
         "com.chuusai" %% "shapeless" % "2.3.3",
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
         "com.amazonaws" % "aws-java-sdk-core" % awsSdkVersion,
         "com.amazonaws" % "aws-java-sdk-kms" % awsSdkVersion % Provided,
         "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion % Provided,
         "com.amazonaws" % "aws-java-sdk-s3" % awsSdkVersion % Provided,
         "org.specs2" %% "specs2-mock" % specs2Version % Test,
-        "com.dwolla" %% "scala-aws-utils-testkit" % "1.6.1" % Test
       )
     },
   ) ++ commonSettings ++ bintraySettings: _*)

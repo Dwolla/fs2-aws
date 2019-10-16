@@ -13,7 +13,7 @@ import com.dwolla.fs2aws._
 import com.dwolla.fs2aws.cloudformation.CloudFormationClient._
 import com.dwolla.fs2aws.cloudformation.Implicits._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.language.reflectiveCalls
 
 trait CloudFormationClient[F[_]] {
@@ -68,7 +68,7 @@ object CloudFormationClient {
 
   def apply[F[_] : Effect](r: Regions): CloudFormationClient[F] = new CloudFormationClientImpl[F](clientForRegion(Option(r)))
 
-  val updatableStackStatuses = Seq(
+  val updatableStackStatuses: Seq[StackStatus] = Seq(
     CREATE_COMPLETE,
     ROLLBACK_COMPLETE,
     UPDATE_COMPLETE,

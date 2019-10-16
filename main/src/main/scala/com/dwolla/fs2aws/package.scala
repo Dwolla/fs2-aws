@@ -5,8 +5,6 @@ import java.util.concurrent.{Future => JFuture}
 import com.amazonaws.AmazonWebServiceRequest
 import com.amazonaws.handlers.AsyncHandler
 
-import scala.language.higherKinds
-
 package object fs2aws {
   //noinspection ScalaUnusedSymbol
   type PaginatedRequest = AmazonWebServiceRequest {def setNextToken(s: String): Unit}

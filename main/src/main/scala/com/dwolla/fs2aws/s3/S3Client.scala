@@ -4,13 +4,13 @@ import cats.effect._
 import cats.implicits._
 import com.amazonaws.event.ProgressEvent
 import com.amazonaws.event.ProgressEventType._
-import com.amazonaws.services.s3.model._
+import com.amazonaws.services.s3.model.{Bucket => _, _}
 import com.amazonaws.services.s3.transfer._
 import com.amazonaws.services.s3.transfer.internal._
 import com.dwolla.fs2utils.Pagination
 import fs2.{io, _}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 trait S3Client[F[_]] {
   val blocker: Blocker

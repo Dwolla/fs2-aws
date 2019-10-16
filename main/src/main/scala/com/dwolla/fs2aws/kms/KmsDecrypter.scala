@@ -12,8 +12,6 @@ import com.amazonaws.services.kms.model._
 import com.dwolla.fs2aws._
 import fs2._
 
-import scala.language.higherKinds
-
 trait KmsDecrypter[F[_]] {
   def decrypt[A](transformer: Transform[A], cryptoText: A): F[Array[Byte]]
   def decrypt[A](transform: Transform[A], cryptoTexts: (String, A)*): Stream[F, Map[String, Array[Byte]]]

@@ -5,7 +5,7 @@ import com.amazonaws.handlers.AsyncHandler
 import com.amazonaws.services.cloudformation.AmazonCloudFormationAsync
 import com.amazonaws.services.cloudformation.model.StackStatus.UPDATE_COMPLETE
 import com.amazonaws.services.cloudformation.model._
-import com.dwolla.awssdk.AmazonAsyncMockingImplicits._
+import com.dwolla.fs2aws.cloudformation.AmazonAsyncMockingImplicits._
 import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification

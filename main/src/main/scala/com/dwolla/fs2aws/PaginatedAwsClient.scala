@@ -5,7 +5,7 @@ import cats.implicits._
 import com.dwolla.fs2utils.Pagination
 import fs2._
 
-import scala.language.{higherKinds, reflectiveCalls}
+import scala.language.reflectiveCalls
 
 class PaginatedAwsClient[F[_] : Effect, Req <: PaginatedRequest, Res <: PaginatedResult, T](requestFactory: () => Req) {
   def via(awsAsyncFunction: AwsAsyncFunction[Req, Res])(extractor: Res => Seq[T]): Stream[F, T] = {

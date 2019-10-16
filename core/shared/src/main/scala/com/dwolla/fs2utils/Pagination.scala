@@ -4,8 +4,6 @@ import cats._
 import cats.implicits._
 import fs2._
 
-import scala.language.higherKinds
-
 object Pagination {
   private sealed trait PageIndicator[S]
   private case class FirstPage[S]() extends PageIndicator[S]
