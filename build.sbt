@@ -87,6 +87,28 @@ lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
     },
   ) ++ commonSettings ++ bintraySettings: _*)
 
+lazy val lambdaIOApp = (project in file("lambda-io-app"))
+  .settings(Seq(
+    name := primaryName + "-lambda-io-app",
+    bintrayPackage := primaryName + "-lambda-io-app",
+    description := "IOApp for AWS Lambda Java runtime",
+    libraryDependencies ++= {
+      val circeVersion = "0.12.2"
+      Seq(
+        "com.amazonaws" % "aws-lambda-java-core" % "1.1.0",
+        "com.amazonaws" % "aws-lambda-java-log4j2" % "1.0.0",
+        "co.fs2" %% "fs2-io" % fs2Version,
+        "io.circe" %% "circe-literal" % circeVersion,
+        "io.circe" %% "circe-generic-extras" % circeVersion,
+        "io.circe" %% "circe-parser" % circeVersion,
+        "io.circe" %% "circe-generic-extras" % circeVersion,
+        "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.0",
+        "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.11.2",
+        "org.apache.logging.log4j" % "log4j-api" % "2.11.2",
+      )
+    },
+  ) ++ commonSettings ++ bintraySettings: _*)
+
 lazy val fs2TestKit: Project = (project in file("test-kit"))
   .settings(Seq(
     name := primaryName + "-testkit",
@@ -97,7 +119,7 @@ lazy val fs2TestKit: Project = (project in file("test-kit"))
 
 lazy val `fs2-aws` = (project in file("."))
   .settings(commonSettings ++ noPublishSettings: _*)
-  .aggregate(fs2UtilsJVM, fs2Utils.js, fs2AwsUtils, fs2Aws2Utils, fs2TestKit)
+  .aggregate(fs2UtilsJVM, fs2Utils.js, fs2AwsUtils, fs2Aws2Utils, fs2TestKit, lambdaIOApp)
 
 lazy val noPublishSettings = Seq(
   publish := {},
