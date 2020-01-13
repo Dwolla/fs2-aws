@@ -4,6 +4,8 @@ import sbtcrossproject.CrossPlugin.autoImport.crossProject
 lazy val primaryName = "fs2-aws"
 lazy val specs2Version = "4.8.0"
 lazy val fs2Version = "2.0.1"
+val scala2_12 = "2.12.10"
+val scala2_13 = "2.13.1"
 
 lazy val commonSettings = Seq(
   organization := "com.dwolla",
@@ -87,27 +89,45 @@ lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
     },
   ) ++ commonSettings ++ bintraySettings: _*)
 
-lazy val lambdaIOApp = (project in file("lambda-io-app"))
+lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Full)
+  .in(file("lambda-io-app"))
   .settings(Seq(
     name := primaryName + "-lambda-io-app",
     bintrayPackage := primaryName + "-lambda-io-app",
-    description := "IOApp for AWS Lambda Java runtime",
     libraryDependencies ++= {
       val circeVersion = "0.12.2"
+      Seq(
+        "io.circe" %%% "circe-literal" % circeVersion,
+        "io.circe" %%% "circe-generic-extras" % circeVersion,
+        "io.circe" %%% "circe-parser" % circeVersion,
+        "io.circe" %%% "circe-generic-extras" % circeVersion,
+      )
+    },
+  ) ++ commonSettings ++ bintraySettings: _*)
+  .jvmSettings(
+    description := "IOApp for AWS Lambda Java runtime",
+    libraryDependencies ++= {
       Seq(
         "com.amazonaws" % "aws-lambda-java-core" % "1.1.0",
         "com.amazonaws" % "aws-lambda-java-log4j2" % "1.0.0",
         "co.fs2" %% "fs2-io" % fs2Version,
-        "io.circe" %% "circe-literal" % circeVersion,
-        "io.circe" %% "circe-generic-extras" % circeVersion,
-        "io.circe" %% "circe-parser" % circeVersion,
-        "io.circe" %% "circe-generic-extras" % circeVersion,
         "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.0",
         "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.11.2",
         "org.apache.logging.log4j" % "log4j-api" % "2.11.2",
       )
     },
-  ) ++ commonSettings ++ bintraySettings: _*)
+  )
+  .jsSettings(
+    description := "IOApp for AWS Lambda Node runtime",
+    scalaVersion := scala2_12,
+    crossScalaVersions := Seq(scala2_12),
+    libraryDependencies ++= {
+      Seq(
+        ScalablyTyped.A.`aws-lambda`,
+      )
+    },
+  )
 
 lazy val fs2TestKit: Project = (project in file("test-kit"))
   .settings(Seq(
@@ -119,7 +139,8 @@ lazy val fs2TestKit: Project = (project in file("test-kit"))
 
 lazy val `fs2-aws` = (project in file("."))
   .settings(commonSettings ++ noPublishSettings: _*)
-  .aggregate(fs2UtilsJVM, fs2Utils.js, fs2AwsUtils, fs2Aws2Utils, fs2TestKit, lambdaIOApp)
+  .settings(crossScalaVersions := Seq.empty)
+  .aggregate(fs2UtilsJVM, fs2Utils.js, fs2AwsUtils, fs2Aws2Utils, fs2TestKit, lambdaIOApp.jvm, lambdaIOApp.js)
 
 lazy val noPublishSettings = Seq(
   publish := {},

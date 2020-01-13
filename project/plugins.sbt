@@ -1,7 +1,10 @@
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.5")
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.11")
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.29")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.31")
 addSbtPlugin("org.portable-scala" % "sbt-crossproject"         % "0.6.1")
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "0.6.1")
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
-addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.8")
+addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.10")
+
+resolvers += Resolver.bintrayRepo("oyvindberg", "ScalablyTyped")
+addSbtPlugin("org.scalablytyped" % "sbt-scalablytyped" % "202001070854")
