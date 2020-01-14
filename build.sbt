@@ -12,7 +12,23 @@ lazy val commonSettings = Seq(
   homepage := Some(url("https://github.com/Dwolla/fs2-aws")),
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
   releaseVersionBump := sbtrelease.Version.Bump.Minor,
-  releaseCrossBuild := true,
+  releaseCrossBuild := false,
+  releaseProcess := {
+    import sbtrelease.ReleaseStateTransformations._
+    Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      runClean,
+      releaseStepCommandAndRemaining("+test"),
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      releaseStepCommandAndRemaining("+publish"),
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    )
+  },
   startYear := Option(2018),
   resolvers ++= Seq(
     Resolver.bintrayRepo("dwolla", "maven")
