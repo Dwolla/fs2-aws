@@ -43,11 +43,19 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.sonatypeRepo("releases"),
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-  dependencyOverrides ++= Seq(
-    "org.typelevel" %%% "cats-core" % "2.0.0",
-    "org.typelevel" %%% "cats-effect" % "2.0.0",
-    "commons-logging" % "commons-logging" % "1.2",
-  ),
+  Compile / scalacOptions ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, n)) if n >= 13 => "-Ymacro-annotations" :: Nil
+      case _ => Nil
+    }
+  },
+
+  libraryDependencies ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, n)) if n >= 13 => Nil
+      case _ => compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full) :: Nil
+    }
+  },
 )
 
 lazy val bintraySettings = Seq(
@@ -99,6 +107,7 @@ lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
 
       Seq(
         "co.fs2" %% "fs2-reactive-streams" % fs2Version,
+        "org.typelevel" %% "cats-tagless-macros" % "0.11",
         "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.1",
         "software.amazon.awssdk" % "kms" % "2.7.18" % Provided,
       )
@@ -131,6 +140,8 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
         "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.0",
         "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.11.2",
         "org.apache.logging.log4j" % "log4j-api" % "2.11.2",
+        "org.typelevel" %% "cats-tagless-macros" % "0.11",
+        "org.tpolecat" %% "natchez-core" % "0.0.10",
       )
     },
   )
