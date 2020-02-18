@@ -5,6 +5,7 @@ import java.io._
 import cats.effect._
 import cats.implicits._
 import com.amazonaws.services.lambda.runtime.Context
+import io.chrisdavenport.log4cats.Logger
 import natchez._
 import org.specs2.mutable.Specification
 
@@ -42,6 +43,7 @@ class NoInputInstanceSpec extends Specification {
 }
 
 private[lambda] class NoIOInstance extends IOLambda[Unit, Unit] {
-  override def handleRequestF[F[_] : Concurrent : ContextShift : Timer : Trace](blocker: Blocker)(req: Unit, context: Context): F[LambdaResponse[Unit]] =
+  override def handleRequestF[F[_] : Concurrent : ContextShift : Logger : Timer : Trace](blocker: Blocker)
+                                                                                        (req: Unit, context: Context): F[LambdaResponse[Unit]] =
     NoResponse.pure[F].widen
 }

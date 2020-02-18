@@ -5,6 +5,7 @@ import java.io._
 import cats.effect._
 import cats.implicits._
 import com.amazonaws.services.lambda.runtime.Context
+import io.chrisdavenport.log4cats.Logger
 import natchez._
 import org.specs2.mutable.Specification
 import io.circe.literal._
@@ -31,8 +32,8 @@ class LambdaWithInputAndOutputSpec extends Specification {
 }
 
 private[lambda] class TestInstance extends IOLambda[Input, Output] {
-  override def handleRequestF[F[_] : Concurrent : ContextShift : Timer : Trace](blocker: Blocker)
-                                                                               (s: Input, context: Context): F[LambdaResponse[Output]] =
+  override def handleRequestF[F[_] : Concurrent : ContextShift : Logger : Timer : Trace](blocker: Blocker)
+                                                                                        (s: Input, context: Context): F[LambdaResponse[Output]] =
     for {
       _ <- Trace[F].span(s.foo) {
         ().pure[F]
