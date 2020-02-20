@@ -56,8 +56,8 @@ abstract class IOLambda[A, B](printer: Printer = Defaults.printer,
   protected implicit def logger: Logger[IO] = Slf4jLogger.getLoggerFromName[IO]("LambdaLogger")
   private implicit val kleisliLogger: Logger[Kleisli[IO, Span[IO], *]] = Logger[IO].mapK(Kleisli.liftK)
 
-  def handleRequestF[F[_] : Concurrent : ContextShift : Timer : Trace](blocker: Blocker)
-                                                                      (req: A, context: Context): F[LambdaResponse[B]]
+  def handleRequestF[F[_] : Concurrent : ContextShift : Logger : Timer : Trace](blocker: Blocker)
+                                                                               (req: A, context: Context): F[LambdaResponse[B]]
 
   val tracingEntryPoint: Resource[IO, EntryPoint[IO]] = NoOpEntryPoint[IO]
 
