@@ -44,7 +44,7 @@ trait LowPriorityLambdaReader {
       private val readFrom: Stream[F, Byte] => F[String] = s => Trace[F].span("readCirceDecodables.readFrom") {
         s.through(utf8Decode[F])
           .compile
-          .lastOrError
+          .string
       }
 
       private def parseStream(input: Stream[F, Byte])(implicit L: Logger[F]): F[A] = Trace[F].span("readCirceDecodables.parseStream") {
