@@ -5,7 +5,8 @@ import java.io._
 import cats._
 import cats.data._
 import cats.effect._
-import cats.implicits._
+import cats.tagless._
+import cats.tagless.implicits._
 import cats.implicits._
 import com.amazonaws.services.lambda.runtime._
 import io.circe._
@@ -18,6 +19,20 @@ import io.chrisdavenport.log4cats.Logger
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 
 import scala.concurrent.ExecutionContext
+
+abstract class IOLambda[A, B](implicit
+                              LR: LambdaReader[Kleisli[Kleisli[IO, Span[IO], *], LambdaReaderEnvironment[Kleisli[IO, Span[IO], *]], *], A]) extends ResourceIOLambda[BlockerK, A, B] {
+  def handleRequestF[F[_] : Concurrent : ContextShift : Logger : Timer : Trace](blocker: Blocker)
+                                                                               (req: A, context: Context): F[LambdaResponse[B]]
+
+  override def resources[F[_] : ConcurrentEffect : ContextShift : Logger : Timer](blocker: Blocker)
+                                                                                 (req: A, context: Context): Resource[F, BlockerK[F]] =
+    Resource.pure[F, BlockerK[F]](BlockerK[F](blocker))
+
+  override def handleRequestF[F[_] : Concurrent : ContextShift : Logger : Timer : Trace](resources: BlockerK[F])
+                                                                                        (req: A, context: Context): F[LambdaResponse[B]] =
+    handleRequestF[F](resources.blocker)(req, context)
+}
 
 /**
  * This class is analogous to the cats-effect `IOApp`, but for
@@ -47,15 +62,19 @@ import scala.concurrent.ExecutionContext
  *
  * IOLambda should be considered experimental at this point.
  */
-abstract class IOLambda[A, B](printer: Printer = Defaults.printer,
-                              executionContext: ExecutionContext = Defaults.executionContext,
-                             )(implicit LR: LambdaReader[Kleisli[Kleisli[IO, Span[IO], *], LambdaReaderEnvironment[Kleisli[IO, Span[IO], *]], *], A]) extends RequestStreamHandler {
+abstract class ResourceIOLambda[Resources[_[_]] : InvariantK, A, B](printer: Printer = Defaults.printer,
+                                                                    executionContext: ExecutionContext = Defaults.executionContext)
+                                                                   (implicit
+                                                                    LR: LambdaReader[Kleisli[Kleisli[IO, Span[IO], *], LambdaReaderEnvironment[Kleisli[IO, Span[IO], *]], *], A]) extends RequestStreamHandler {
   protected implicit def contextShift: ContextShift[IO] = cats.effect.IO.contextShift(executionContext)
   protected implicit def timer: Timer[IO] = cats.effect.IO.timer(executionContext)
   protected implicit def logger: Logger[IO] = Slf4jLogger.getLoggerFromName[IO]("LambdaLogger")
   private implicit val kleisliLogger: Logger[Kleisli[IO, Span[IO], *]] = Logger[IO].mapK(Kleisli.liftK)
 
-  def handleRequestF[F[_] : Concurrent : ContextShift : Logger : Timer : Trace](blocker: Blocker)
+  def resources[F[_] : ConcurrentEffect : ContextShift : Logger : Timer](blocker: Blocker)
+                                                                        (req: A, context: Context): Resource[F, Resources[F]]
+
+  def handleRequestF[F[_] : Concurrent : ContextShift : Logger : Timer : Trace](resources: Resources[F])
                                                                                (req: A, context: Context): F[LambdaResponse[B]]
 
   val tracingEntryPoint: Resource[IO, EntryPoint[IO]] = NoOpEntryPoint[IO]
@@ -74,7 +93,12 @@ abstract class IOLambda[A, B](printer: Printer = Defaults.printer,
             LR
               .read(Kleisli.liftF(Kleisli.liftF(input)))
               .run(LambdaReaderEnvironment(blocker))
-              .flatMap(handleRequestF[Kleisli[IO, Span[IO], *]](blocker)(_, context))
+              .flatMap { a =>
+                resources[IO](blocker)(a, context)
+                  .mapK(Kleisli.liftK[IO, Span[IO]])
+                  .map(_.imapK(Kleisli.liftK[IO, Span[IO]])(λ[Kleisli[IO, Span[IO], *] ~> IO](_.run(span))))
+                  .use(handleRequestF[Kleisli[IO, Span[IO], *]](_)(a, context))
+              }
               .run(span)
 
           Stream.eval(response).flatMap {
@@ -98,7 +122,7 @@ abstract class IOLambda[A, B](printer: Printer = Defaults.printer,
 object IOLambda {
   object Defaults {
     val printer: Printer = Printer.noSpaces
-    val executionContext: ExecutionContext = ExecutionContext.global
+    val executionContext: ExecutionContext = ExecutionContext.global // TODO change this to the IOApp default
     val logRequest: Boolean = true
   }
 }
@@ -116,4 +140,12 @@ object NoOpEntryPoint {
       override def continue(name: String, kernel: Kernel): Resource[F, Span[F]] = noOpSpan[F]
       override def continueOrElseRoot(name: String, kernel: Kernel): Resource[F, Span[F]] = noOpSpan[F]
     })
+}
+
+case class BlockerK[F[_]](blocker: Blocker)
+
+object BlockerK {
+  implicit val blockerHolderInvariantK: InvariantK[BlockerK] = new InvariantK[BlockerK] {
+    override def imapK[F[_], G[_]](af: BlockerK[F])(fk: F ~> G)(gK: G ~> F): BlockerK[G] = BlockerK[G](af.blocker)
+  }
 }

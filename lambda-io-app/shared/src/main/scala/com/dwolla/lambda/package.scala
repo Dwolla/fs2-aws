@@ -12,12 +12,16 @@ package object lambda extends LowPriorityLambdaResponseImplicits {
   }
 
   implicit val unitToResponseWrapper: Unit => LambdaResponse[Nothing] = _ => NoResponse
+  implicit def fUnitToResponseWrapper[F[_] : Functor]: F[Unit] => F[LambdaResponse[Nothing]] = _.map(unitToResponseWrapper)
 }
 
 package lambda {
   trait LowPriorityLambdaResponseImplicits {
     implicit def encodableToResponseWrapper[T: Encoder](t: T): LambdaResponse[T] =
       ResponseWrapper(t, Encoder[T])
+
+    implicit def encodableFToResponseWrapper[F[_] : Functor, T: Encoder](ft: F[T]): F[LambdaResponse[T]] =
+      ft.map(ResponseWrapper(_, Encoder[T]))
   }
 
   sealed trait LambdaResponse[+T]
