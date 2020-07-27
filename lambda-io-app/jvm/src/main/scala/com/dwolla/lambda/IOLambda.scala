@@ -8,7 +8,6 @@ import cats.effect._
 import cats.implicits._
 import cats.implicits._
 import com.amazonaws.services.lambda.runtime._
-import com.dwolla.lambda.IOLambda._
 import io.circe._
 import natchez._
 import IOLambda._
@@ -105,14 +104,14 @@ object IOLambda {
 }
 
 object NoOpEntryPoint {
-  private def noOpSpan[F[_] : Applicative]: Resource[F, Span[F]] = Resource.pure(new Span[F] {
+  private def noOpSpan[F[_] : Applicative]: Resource[F, Span[F]] = Resource.pure[F, Span[F]](new Span[F] {
     override def put(fields: (String, TraceValue)*): F[Unit] = ().pure[F]
     override def kernel: F[Kernel] = Kernel(Map.empty).pure[F]
     override def span(name: String): Resource[F, Span[F]] = noOpSpan[F]
   })
 
   def apply[F[_] : Applicative]: Resource[F, EntryPoint[F]] =
-    Resource.pure(new EntryPoint[F] {
+    Resource.pure[F, EntryPoint[F]](new EntryPoint[F] {
       override def root(name: String): Resource[F, Span[F]] = noOpSpan[F]
       override def continue(name: String, kernel: Kernel): Resource[F, Span[F]] = noOpSpan[F]
       override def continueOrElseRoot(name: String, kernel: Kernel): Resource[F, Span[F]] = noOpSpan[F]

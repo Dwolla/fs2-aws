@@ -5,7 +5,7 @@ import fs2._
 package object hashing {
   implicit class ByteArrayToHexString(as: Array[Byte]) {
     def toHexString: String =
-      new String(Stream.emits(as).chunks.through(hexStringPipe).compile.to[Array])
+      new String(Stream.emits(as).chunks.through(hexStringPipe).compile.to(Array))
   }
 
   private val alphabet: Vector[Char] = Vector('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')

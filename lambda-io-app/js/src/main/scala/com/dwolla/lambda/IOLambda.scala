@@ -1,7 +1,7 @@
 package com.dwolla.lambda
 
 import cats.effect._
-import typings.awsDashLambda.awsDashLambdaMod.{Context, Handler}
+import jsdep.awsLambda.handlerMod._
 
 import scala.concurrent.ExecutionContext
 import scala.scalajs.js

@@ -1,11 +1,6 @@
-import sbtcrossproject.CrossType // needed until Scala.js 1.0 is released
-import sbtcrossproject.CrossPlugin.autoImport.crossProject
-
 lazy val primaryName = "fs2-aws"
-lazy val specs2Version = "4.8.0"
-lazy val fs2Version = "2.0.1"
-val scala2_12 = "2.12.10"
-val scala2_13 = "2.13.1"
+lazy val specs2Version = "4.10.0"
+lazy val fs2Version = "2.4.2"
 
 lazy val commonSettings = Seq(
   organization := "com.dwolla",
@@ -121,12 +116,15 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
     name := primaryName + "-lambda-io-app",
     bintrayPackage := primaryName + "-lambda-io-app",
     libraryDependencies ++= {
-      val circeVersion = "0.12.2"
+      val circeVersion = "0.13.0"
+      val silencerVersion = "1.7.0"
       Seq(
         "io.circe" %%% "circe-literal" % circeVersion,
         "io.circe" %%% "circe-generic-extras" % circeVersion,
         "io.circe" %%% "circe-parser" % circeVersion,
         "io.circe" %%% "circe-generic-extras" % circeVersion,
+        compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
+        "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
       )
     },
   ) ++ commonSettings ++ bintraySettings: _*)
@@ -148,14 +146,12 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
   )
   .jsSettings(
     description := "IOApp for AWS Lambda Node runtime",
-    scalaVersion := scala2_12,
-    crossScalaVersions := Seq(scala2_12),
-    libraryDependencies ++= {
-      Seq(
-        ScalablyTyped.A.`aws-lambda`,
-      )
-    },
+    Compile / npmDependencies += ("@types/aws-lambda" -> "8.10.59"),
+    scalacOptions += "-P:silencer:pathFilters=src_managed",
+    stOutputPackage := "jsdep",
+    stMinimize := Selection.AllExcept("@types/aws-lambda"),
   )
+  .jsConfigure(_.enablePlugins(ScalablyTypedConverterGenSourcePlugin))
 
 lazy val fs2TestKit: Project = (project in file("test-kit"))
   .settings(Seq(
