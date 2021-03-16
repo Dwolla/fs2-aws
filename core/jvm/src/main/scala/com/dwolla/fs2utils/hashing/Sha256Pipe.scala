@@ -7,7 +7,7 @@ import cats.effect.concurrent.Deferred
 import fs2._
 
 object Sha256Pipe {
-  def apply[F[_] : Sync](promisedHexString: Deferred[F, String]): Pipe[F, Byte, Byte] = {
+  def apply[F[_] : Sync](promisedHexString: Deferred[F, Either[Throwable, String]]): Pipe[F, Byte, Byte] = {
     def pull(digest: MessageDigest): Stream[F, Byte] => Pull[F, Byte, String] =
       _.pull.uncons.flatMap {
         case None =>
@@ -25,9 +25,15 @@ object Sha256Pipe {
       for {
         initialDigest <- Pull.eval(Sync[F].delay(MessageDigest.getInstance("SHA-256")))
         hexString <- pull(initialDigest)(input)
-        _ <- Pull.eval(promisedHexString.complete(hexString))
+        _ <- Pull.eval(promisedHexString.complete(Right(hexString)))
       } yield ()
 
-    calculateHashOf(_).stream
+    calculateHashOf(_)
+      .stream
+      .handleErrorWith { ex =>
+        Stream.eval(promisedHexString.complete(Left(InputStreamFailed(ex)))).drain ++ Stream.raiseError[F](ex)
+      }
   }
 }
+
+case class InputStreamFailed(cause: Throwable) extends RuntimeException("The input stream failed, so no hash is available", cause)
