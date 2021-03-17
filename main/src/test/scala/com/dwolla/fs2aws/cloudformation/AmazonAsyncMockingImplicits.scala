@@ -43,7 +43,7 @@ object AmazonAsyncMockingImplicits {
    */
   implicit class AmazonAsyncResult[Res](res: Res) {
 
-    def completes[Req <: AmazonWebServiceRequest : ClassTag](func: (Req, AsyncHandler[Req, Res]) => JFuture[Res]): Unit = {
+    def completes[Req <: AmazonWebServiceRequest](func: (Req, AsyncHandler[Req, Res]) => JFuture[Res]): Unit = {
 
       when(func(any[Req], any[AsyncHandler[Req, Res]])) thenAnswer ((invocation: InvocationOnMock) => {
         invocation.getArguments match {
