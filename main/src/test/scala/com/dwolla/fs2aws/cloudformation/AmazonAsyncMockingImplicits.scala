@@ -48,6 +48,7 @@ object AmazonAsyncMockingImplicits {
       when(func(any[Req], any[AsyncHandler[Req, Res]])) thenAnswer ((invocation: InvocationOnMock) => {
         invocation.getArguments match {
           case Array(req, handler) => handler.asInstanceOf[AsyncHandler[Req, Res]].onSuccess(req.asInstanceOf[Req], res)
+          case _ => throw new IllegalArgumentException("must be invoked with the request and handler as arguments")
         }
         null
       })
@@ -80,6 +81,7 @@ object AmazonAsyncMockingImplicits {
             case Left(ex) => handler.onError(ex)
             case Right(res) => handler.onSuccess(req, res)
           }
+          case _ => throw new IllegalArgumentException("must be invoked with the request and handler as arguments")
         }
         null
       })

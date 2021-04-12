@@ -160,6 +160,6 @@ lazy val fs2TestKit: Project = (project in file("test-kit"))
 
 lazy val `fs2-aws` = (project in file("."))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
   )
   .aggregate(fs2UtilsJVM, fs2Utils.js, fs2AwsUtils, fs2Aws2Utils, fs2TestKit, lambdaIOApp.jvm, lambdaIOApp.js)
