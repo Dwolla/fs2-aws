@@ -132,7 +132,7 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
         "com.amazonaws" % "aws-lambda-java-core" % "1.1.0",
         "com.amazonaws" % "aws-lambda-java-log4j2" % "1.0.0",
         "co.fs2" %% "fs2-io" % fs2Version,
-        "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.0",
+        "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.1",
         "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.11.2",
         "org.apache.logging.log4j" % "log4j-api" % "2.11.2",
         "org.typelevel" %% "cats-tagless-macros" % "0.11",
