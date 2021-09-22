@@ -102,7 +102,7 @@ lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
     libraryDependencies ++= {
       Seq(
         "co.fs2" %% "fs2-reactive-streams" % fs2Version,
-        "org.typelevel" %% "cats-tagless-macros" % "0.11",
+        "org.typelevel" %% "cats-tagless-macros" % "0.14.0",
         "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.1",
         "software.amazon.awssdk" % "kms" % "2.16.20" % Provided,
       )
@@ -135,7 +135,7 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
         "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.0",
         "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.11.2",
         "org.apache.logging.log4j" % "log4j-api" % "2.11.2",
-        "org.typelevel" %% "cats-tagless-macros" % "0.11",
+        "org.typelevel" %% "cats-tagless-macros" % "0.14.0",
         "org.tpolecat" %% "natchez-core" % "0.0.10",
         "org.specs2" %% "specs2-scalacheck" % specs2Version,
       )
