@@ -130,7 +130,7 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= {
       Seq(
         "com.amazonaws" % "aws-lambda-java-core" % "1.2.1",
-        "com.amazonaws" % "aws-lambda-java-log4j2" % "1.0.0",
+        "com.amazonaws" % "aws-lambda-java-log4j2" % "1.2.0",
         "co.fs2" %% "fs2-io" % fs2Version,
         "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.0",
         "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.14.1",
