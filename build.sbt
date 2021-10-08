@@ -14,7 +14,7 @@ inThisBuild(List(
       url("https://dwolla.com")
     )
   ),
-  crossScalaVersions := Seq("2.13.5", "2.12.13"),
+  crossScalaVersions := Seq("2.13.6", "2.12.15"),
   scalaVersion := crossScalaVersions.value.head,
   startYear := Option(2018),
   libraryDependencies ++= {
@@ -44,7 +44,7 @@ inThisBuild(List(
 ))
 
 lazy val compilerOptions = Seq(
-  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.3" cross CrossVersion.full),
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
   Compile / scalacOptions ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
