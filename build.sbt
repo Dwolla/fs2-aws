@@ -129,7 +129,7 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
     description := "IOApp for AWS Lambda Java runtime",
     libraryDependencies ++= {
       Seq(
-        "com.amazonaws" % "aws-lambda-java-core" % "1.1.0",
+        "com.amazonaws" % "aws-lambda-java-core" % "1.2.1",
         "com.amazonaws" % "aws-lambda-java-log4j2" % "1.0.0",
         "co.fs2" %% "fs2-io" % fs2Version,
         "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.1",
