@@ -78,12 +78,12 @@ lazy val fs2AwsUtils = (project in file("main"))
     name := primaryName,
     description := "Utility classes for interacting with the AWS SDKs from Scala using fs2",
     libraryDependencies ++= {
-      val awsSdkVersion = "1.11.1034"
+      val awsSdkVersion = "1.12.83"
 
       Seq(
         "co.fs2" %% "fs2-io" % fs2Version,
         "com.chuusai" %% "shapeless" % "2.3.7",
-        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.6",
         "com.amazonaws" % "aws-java-sdk-core" % awsSdkVersion,
         "com.amazonaws" % "aws-java-sdk-kms" % awsSdkVersion % Provided,
         "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion % Provided,
@@ -130,9 +130,9 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= {
       Seq(
         "com.amazonaws" % "aws-lambda-java-core" % "1.2.1",
-        "com.amazonaws" % "aws-lambda-java-log4j2" % "1.0.0",
+        "com.amazonaws" % "aws-lambda-java-log4j2" % "1.2.0",
         "co.fs2" %% "fs2-io" % fs2Version,
-        "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.0",
+        "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.1",
         "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.14.1",
         "org.apache.logging.log4j" % "log4j-api" % "2.14.1",
         "org.typelevel" %% "cats-tagless-macros" % "0.11",
