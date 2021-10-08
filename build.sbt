@@ -78,7 +78,7 @@ lazy val fs2AwsUtils = (project in file("main"))
     name := primaryName,
     description := "Utility classes for interacting with the AWS SDKs from Scala using fs2",
     libraryDependencies ++= {
-      val awsSdkVersion = "1.11.1034"
+      val awsSdkVersion = "1.12.83"
 
       Seq(
         "co.fs2" %% "fs2-io" % fs2Version,
