@@ -6,4 +6,4 @@ addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.20")
 addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.10.1")
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.7")
 
-addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta32")
+addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta36")
