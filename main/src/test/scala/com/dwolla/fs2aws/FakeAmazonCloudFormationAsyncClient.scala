@@ -11,6 +11,66 @@ import java.util.concurrent.Future
 
 //noinspection NotImplementedCode,ScalaDeprecation
 class FakeAmazonCloudFormationAsyncClient extends AmazonCloudFormationAsync {
+  override def activateTypeAsync(activateTypeRequest: ActivateTypeRequest): Future[ActivateTypeResult] = ???
+
+  override def activateTypeAsync(activateTypeRequest: ActivateTypeRequest, asyncHandler: AsyncHandler[ActivateTypeRequest, ActivateTypeResult]): Future[ActivateTypeResult] = ???
+
+  override def batchDescribeTypeConfigurationsAsync(batchDescribeTypeConfigurationsRequest: BatchDescribeTypeConfigurationsRequest): Future[BatchDescribeTypeConfigurationsResult] = ???
+
+  override def batchDescribeTypeConfigurationsAsync(batchDescribeTypeConfigurationsRequest: BatchDescribeTypeConfigurationsRequest, asyncHandler: AsyncHandler[BatchDescribeTypeConfigurationsRequest, BatchDescribeTypeConfigurationsResult]): Future[BatchDescribeTypeConfigurationsResult] = ???
+
+  override def deactivateTypeAsync(deactivateTypeRequest: DeactivateTypeRequest): Future[DeactivateTypeResult] = ???
+
+  override def deactivateTypeAsync(deactivateTypeRequest: DeactivateTypeRequest, asyncHandler: AsyncHandler[DeactivateTypeRequest, DeactivateTypeResult]): Future[DeactivateTypeResult] = ???
+
+  override def describePublisherAsync(describePublisherRequest: DescribePublisherRequest): Future[DescribePublisherResult] = ???
+
+  override def describePublisherAsync(describePublisherRequest: DescribePublisherRequest, asyncHandler: AsyncHandler[DescribePublisherRequest, DescribePublisherResult]): Future[DescribePublisherResult] = ???
+
+  override def importStacksToStackSetAsync(importStacksToStackSetRequest: ImportStacksToStackSetRequest): Future[ImportStacksToStackSetResult] = ???
+
+  override def importStacksToStackSetAsync(importStacksToStackSetRequest: ImportStacksToStackSetRequest, asyncHandler: AsyncHandler[ImportStacksToStackSetRequest, ImportStacksToStackSetResult]): Future[ImportStacksToStackSetResult] = ???
+
+  override def publishTypeAsync(publishTypeRequest: PublishTypeRequest): Future[PublishTypeResult] = ???
+
+  override def publishTypeAsync(publishTypeRequest: PublishTypeRequest, asyncHandler: AsyncHandler[PublishTypeRequest, PublishTypeResult]): Future[PublishTypeResult] = ???
+
+  override def registerPublisherAsync(registerPublisherRequest: RegisterPublisherRequest): Future[RegisterPublisherResult] = ???
+
+  override def registerPublisherAsync(registerPublisherRequest: RegisterPublisherRequest, asyncHandler: AsyncHandler[RegisterPublisherRequest, RegisterPublisherResult]): Future[RegisterPublisherResult] = ???
+
+  override def rollbackStackAsync(rollbackStackRequest: RollbackStackRequest): Future[RollbackStackResult] = ???
+
+  override def rollbackStackAsync(rollbackStackRequest: RollbackStackRequest, asyncHandler: AsyncHandler[RollbackStackRequest, RollbackStackResult]): Future[RollbackStackResult] = ???
+
+  override def setTypeConfigurationAsync(setTypeConfigurationRequest: SetTypeConfigurationRequest): Future[SetTypeConfigurationResult] = ???
+
+  override def setTypeConfigurationAsync(setTypeConfigurationRequest: SetTypeConfigurationRequest, asyncHandler: AsyncHandler[SetTypeConfigurationRequest, SetTypeConfigurationResult]): Future[SetTypeConfigurationResult] = ???
+
+  override def testTypeAsync(testTypeRequest: TestTypeRequest): Future[TestTypeResult] = ???
+
+  override def testTypeAsync(testTypeRequest: TestTypeRequest, asyncHandler: AsyncHandler[TestTypeRequest, TestTypeResult]): Future[TestTypeResult] = ???
+
+  override def activateType(activateTypeRequest: ActivateTypeRequest): ActivateTypeResult = ???
+
+  override def batchDescribeTypeConfigurations(batchDescribeTypeConfigurationsRequest: BatchDescribeTypeConfigurationsRequest): BatchDescribeTypeConfigurationsResult = ???
+
+  override def deactivateType(deactivateTypeRequest: DeactivateTypeRequest): DeactivateTypeResult = ???
+
+  override def describePublisher(describePublisherRequest: DescribePublisherRequest): DescribePublisherResult = ???
+
+  override def importStacksToStackSet(importStacksToStackSetRequest: ImportStacksToStackSetRequest): ImportStacksToStackSetResult = ???
+
+  override def publishType(publishTypeRequest: PublishTypeRequest): PublishTypeResult = ???
+
+  override def registerPublisher(registerPublisherRequest: RegisterPublisherRequest): RegisterPublisherResult = ???
+
+  override def rollbackStack(rollbackStackRequest: RollbackStackRequest): RollbackStackResult = ???
+
+  override def setTypeConfiguration(setTypeConfigurationRequest: SetTypeConfigurationRequest): SetTypeConfigurationResult = ???
+
+  override def testType(testTypeRequest: TestTypeRequest): TestTypeResult = ???
+
   override def cancelUpdateStackAsync(cancelUpdateStackRequest: CancelUpdateStackRequest): Future[CancelUpdateStackResult] = ???
 
   override def cancelUpdateStackAsync(cancelUpdateStackRequest: CancelUpdateStackRequest, asyncHandler: AsyncHandler[CancelUpdateStackRequest, CancelUpdateStackResult]): Future[CancelUpdateStackResult] = ???
