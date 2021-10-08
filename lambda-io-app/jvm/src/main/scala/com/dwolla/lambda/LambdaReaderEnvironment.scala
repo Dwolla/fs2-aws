@@ -6,7 +6,7 @@ import _root_.fs2.io.readInputStream
 import cats.Applicative
 import cats.effect._
 import cats.implicits._
-import io.chrisdavenport.log4cats.Logger
+import org.typelevel.log4cats.Logger
 import natchez._
 
 import scala.annotation.implicitNotFound

@@ -5,7 +5,7 @@ import java.io._
 import cats.effect._
 import cats.implicits._
 import com.amazonaws.services.lambda.runtime.Context
-import io.chrisdavenport.log4cats.Logger
+import org.typelevel.log4cats.Logger
 import natchez._
 import org.specs2.mutable.Specification
 
