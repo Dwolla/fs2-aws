@@ -15,8 +15,8 @@ import IOLambda._
 import fs2.Stream
 import fs2.io.writeOutputStream
 import fs2.text.utf8Encode
-import io.chrisdavenport.log4cats.Logger
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 import scala.concurrent.ExecutionContext
 

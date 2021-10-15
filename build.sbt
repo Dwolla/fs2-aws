@@ -1,6 +1,6 @@
 lazy val primaryName = "fs2-aws"
 lazy val specs2Version = "4.10.6"
-lazy val fs2Version = "2.5.9"
+lazy val fs2Version = "2.5.10"
 
 inThisBuild(List(
   organization := "com.dwolla",
@@ -78,12 +78,12 @@ lazy val fs2AwsUtils = (project in file("main"))
     name := primaryName,
     description := "Utility classes for interacting with the AWS SDKs from Scala using fs2",
     libraryDependencies ++= {
-      val awsSdkVersion = "1.11.1034"
+      val awsSdkVersion = "1.12.88"
 
       Seq(
         "co.fs2" %% "fs2-io" % fs2Version,
         "com.chuusai" %% "shapeless" % "2.3.7",
-        "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.5.0",
         "com.amazonaws" % "aws-java-sdk-core" % awsSdkVersion,
         "com.amazonaws" % "aws-java-sdk-kms" % awsSdkVersion % Provided,
         "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion % Provided,
@@ -104,7 +104,7 @@ lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
         "co.fs2" %% "fs2-reactive-streams" % fs2Version,
         "org.typelevel" %% "cats-tagless-macros" % "0.14.0",
         "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.1",
-        "software.amazon.awssdk" % "kms" % "2.16.20" % Provided,
+        "software.amazon.awssdk" % "kms" % "2.17.60" % Provided,
       )
     },
   )
@@ -116,7 +116,7 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := primaryName + "-lambda-io-app",
     libraryDependencies ++= {
-      val circeVersion = "0.13.0"
+      val circeVersion = "0.14.1"
       Seq(
         "io.circe" %%% "circe-literal" % circeVersion,
         "io.circe" %%% "circe-generic-extras" % circeVersion,
@@ -130,11 +130,11 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= {
       Seq(
         "com.amazonaws" % "aws-lambda-java-core" % "1.2.1",
-        "com.amazonaws" % "aws-lambda-java-log4j2" % "1.0.0",
+        "com.amazonaws" % "aws-lambda-java-log4j2" % "1.2.0",
         "co.fs2" %% "fs2-io" % fs2Version,
-        "io.chrisdavenport" %% "log4cats-slf4j" % "1.0.0",
-        "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.11.2",
-        "org.apache.logging.log4j" % "log4j-api" % "2.11.2",
+        "org.typelevel" %% "log4cats-slf4j" % "1.3.1",
+        "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.14.1",
+        "org.apache.logging.log4j" % "log4j-api" % "2.14.1",
         "org.typelevel" %% "cats-tagless-macros" % "0.14.0",
         "org.tpolecat" %% "natchez-core" % "0.0.10",
         "org.specs2" %% "specs2-scalacheck" % specs2Version,

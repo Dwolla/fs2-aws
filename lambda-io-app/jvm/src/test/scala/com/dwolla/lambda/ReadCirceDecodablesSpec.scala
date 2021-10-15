@@ -7,7 +7,7 @@ import cats.data._
 import cats.effect._
 import cats.implicits._
 import com.dwolla.lambda.LambdaReader._
-import io.chrisdavenport.log4cats.Logger
+import org.typelevel.log4cats.Logger
 import io.circe._
 import io.circe.generic.semiauto._
 import io.circe.syntax._
