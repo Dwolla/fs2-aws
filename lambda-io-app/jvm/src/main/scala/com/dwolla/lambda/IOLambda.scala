@@ -1,23 +1,23 @@
 package com.dwolla.lambda
 
-import java.io._
-
 import cats._
 import cats.data._
 import cats.effect._
+import cats.implicits._
 import cats.tagless._
 import cats.tagless.implicits._
-import cats.implicits._
 import com.amazonaws.services.lambda.runtime._
-import io.circe._
-import natchez._
-import IOLambda._
+import com.dwolla.lambda.IOLambda._
 import fs2.Stream
 import fs2.io.writeOutputStream
 import fs2.text.utf8Encode
+import io.circe._
+import natchez._
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 
+import java.io._
+import java.net.URI
 import scala.concurrent.ExecutionContext
 
 abstract class IOLambda[A, B](implicit
@@ -132,6 +132,9 @@ object NoOpEntryPoint {
     override def put(fields: (String, TraceValue)*): F[Unit] = ().pure[F]
     override def kernel: F[Kernel] = Kernel(Map.empty).pure[F]
     override def span(name: String): Resource[F, Span[F]] = noOpSpan[F]
+    override def traceId: F[Option[String]] = none[String].pure[F]
+    override def spanId: F[Option[String]] = none[String].pure[F]
+    override def traceUri: F[Option[URI]] = none[URI].pure[F]
   })
 
   def apply[F[_] : Applicative]: Resource[F, EntryPoint[F]] =
