@@ -21,7 +21,7 @@ inThisBuild(List(
     Seq(
       "co.fs2" %%% "fs2-core" % fs2Version,
       "org.specs2" %%% "specs2-core" % specs2Version % Test,
-      "org.specs2" %%% "specs2-cats" % "4.12.1" % Test,
+      "org.specs2" %%% "specs2-cats" % "4.12.12" % Test,
     )
   },
   resolvers += Resolver.sonatypeRepo("releases"),
