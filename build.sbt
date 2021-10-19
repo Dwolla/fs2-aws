@@ -136,7 +136,7 @@ lazy val lambdaIOApp = crossProject(JSPlatform, JVMPlatform)
         "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.14.1",
         "org.apache.logging.log4j" % "log4j-api" % "2.14.1",
         "org.typelevel" %% "cats-tagless-macros" % "0.14.0",
-        "org.tpolecat" %% "natchez-core" % "0.0.26",
+        "org.tpolecat" %% "natchez-core" % "0.1.5",
         "org.specs2" %% "specs2-scalacheck" % specs2Version,
       )
     },
