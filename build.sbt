@@ -83,7 +83,7 @@ lazy val fs2AwsUtils = (project in file("main"))
       Seq(
         "co.fs2" %% "fs2-io" % fs2Version,
         "com.chuusai" %% "shapeless" % "2.3.7",
-        "org.scala-lang.modules" %% "scala-collection-compat" % "2.5.0",
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.6.0",
         "com.amazonaws" % "aws-java-sdk-core" % awsSdkVersion,
         "com.amazonaws" % "aws-java-sdk-kms" % awsSdkVersion % Provided,
         "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion % Provided,
@@ -104,7 +104,7 @@ lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
         "co.fs2" %% "fs2-reactive-streams" % fs2Version,
         "org.typelevel" %% "cats-tagless-macros" % "0.14.0",
         "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.1",
-        "software.amazon.awssdk" % "kms" % "2.17.77" % Provided,
+        "software.amazon.awssdk" % "kms" % "2.17.78" % Provided,
       )
     },
   )
