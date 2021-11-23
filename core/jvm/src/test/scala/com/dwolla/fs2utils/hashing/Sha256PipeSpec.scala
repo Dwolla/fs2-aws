@@ -1,58 +1,48 @@
 package com.dwolla.fs2utils.hashing
 
-import java.security.MessageDigest
-
 import cats.effect._
-import cats.effect.concurrent.Deferred
 import cats.implicits._
+import com.eed3si9n.expecty.Expecty.expect
 import fs2._
-import org.specs2.execute.AsResult
-import org.specs2.matcher._
-import org.specs2.mutable.Specification
-import org.specs2.specification.core.{AsExecution, Execution}
+import munit.CatsEffectSuite
 
+import java.security.MessageDigest
 import scala.concurrent.duration._
 
-class Sha256PipeSpec extends Specification with IOMatchers {
+class Sha256PipeSpec extends CatsEffectSuite {
 
-  "Sha256Pipe" should {
-    "pass the bytes through unchanged while returning the hash of the bytes" >> {
+  test("Sha256Pipe should pass the bytes through unchanged while returning the hash of the bytes") {
       val example = "Dwolla 🧟‍♀️"
       for {
         expectedDigest <- IO(MessageDigest.getInstance("SHA-256").digest(example.getBytes("UTF-8")))
         deferredDigest <- Deferred[IO, Either[Throwable, String]]
         str <- Stream.emit(example)
-                .through(text.utf8Encode)
+                .through(text.utf8.encode)
                 .through(Sha256Pipe(deferredDigest))
-                .through(text.utf8Decode)
+                .through(text.utf8.decode)
                 .compile
                 .toList
         calculatedDigest <- deferredDigest.get
       } yield {
-        str must beEqualTo(List(example))
-        calculatedDigest must beRight(expectedDigest.toHexString)
+        expect(str == List(example))
+        expect(calculatedDigest == Right(expectedDigest.toHexString))
       }
     }
 
-    "fail the deferred if the stream raises an exception" >> {
+    test("fail the deferred if the stream raises an exception") {
       for {
         deferred <- Deferred[IO, Either[Throwable, String]]
         exception = new RuntimeException("boom") {}
         failure <- (Stream.eval(IO("hello world")) ++ Stream.raiseError[IO](exception))
-                      .through(text.utf8Encode)
+                      .through(text.utf8.encode)
                       .through(Sha256Pipe(deferred))
                       .compile
                       .drain
                       .attempt
         output <- deferred.get.flatMap(_.liftTo[IO]).timeout(2.seconds).attempt
       } yield {
-        failure must beLeft(exception)
-        output must beLeft(InputStreamFailed(exception))
+        expect(failure == Left(exception))
+        expect(output == Left(InputStreamFailed(exception)))
       }
-    }
-  }
-
-  private implicit def ioAsExecution[R: AsResult]: AsExecution[IO[R]] = new AsExecution[IO[R]] {
-    def execute(r: => IO[R]): Execution = Execution.withEnvAsync(env => (IO.shift(env.executionContext) >> r).unsafeToFuture())
   }
 }

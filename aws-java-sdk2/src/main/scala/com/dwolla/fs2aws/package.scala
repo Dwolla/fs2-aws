@@ -31,8 +31,8 @@ class PartiallyAppliedFromPublisherFRes[F[_], Res](publisher: Publisher[Res]) {
     res andThen (_.asScala) andThen Chunk.iterable andThen Stream.chunk
 
   def apply[O](extractor: Res => java.lang.Iterable[O])
-              (implicit ev: ConcurrentEffect[F]): Stream[F, O] =
-    fromPublisher[F, Res](publisher)
+              (implicit ev: Async[F]): Stream[F, O] =
+    fromPublisher[F, Res](publisher, 1)
       .flatMap(toStream(extractor))
 
 }
@@ -41,14 +41,14 @@ class PartiallyAppliedEvalF[F[_]] {
   def apply[Req, Res, O](req: => Req)
                         (client: Req => CompletableFuture[Res])
                         (extractor: Res => O)
-                        (implicit ev: Concurrent[F]): F[O] =
+                        (implicit ev: Async[F]): F[O] =
     cfToF[F](client(req)).map(extractor)
 }
 
 private[fs2aws] class PartialCompletableFutureToF[F[_]] {
   def apply[A](makeCf: => CompletableFuture[A])
-              (implicit ev: Concurrent[F]): F[A] =
-    Concurrent.cancelableF[F, A] { cb =>
+              (implicit ev: Async[F]): F[A] = {
+    Async[F].async { cb =>
       val cf = makeCf
       cf.handle[Unit]((result, err) => err match {
         case null =>
@@ -61,7 +61,7 @@ private[fs2aws] class PartialCompletableFutureToF[F[_]] {
           cb(Left(ex))
       })
 
-      val cancelToken: CancelToken[F] = Sync[F].delay(cf.cancel(true)).void
-      cancelToken.pure[F]
+      Sync[F].delay(cf.cancel(true)).void.some.pure[F]
     }
+  }
 }

@@ -1,10 +1,10 @@
 package com.dwolla.fs2utils.hashing
 
-import java.security.MessageDigest
-
 import cats.effect._
-import cats.effect.concurrent.Deferred
 import fs2._
+import scodec.bits.ByteVector
+
+import java.security.MessageDigest
 
 object Sha256Pipe {
   def apply[F[_] : Sync](promisedHexString: Deferred[F, Either[Throwable, String]]): Pipe[F, Byte, Byte] = {
@@ -13,9 +13,9 @@ object Sha256Pipe {
         case None =>
           Pull.eval(Sync[F].delay(digest.digest())).map(_.toHexString)
         case Some((c: Chunk[Byte], rest: Stream[F, Byte])) =>
-          val bytes = c.toBytes
+          val bytes: ByteVector = c.toByteVector
           for {
-            _ <- Pull.eval(Sync[F].delay(digest.update(bytes.values, bytes.offset, bytes.length)))
+            _ <- Pull.eval(Sync[F].delay(digest.update(bytes.toByteBuffer)))
             _ <- Pull.output(c)
             hexString <- pull(digest)(rest)
           } yield hexString
