@@ -24,7 +24,7 @@ object KmsAlg {
   private def releaseKmsClient[F[_] : Sync](client: KmsAsyncClient): F[Unit] =
     Sync[F].delay(client.close())
 
-  def resource[F[_] : Concurrent]: Resource[F, KmsAlg[F]] =
+  def resource[F[_] : Async]: Resource[F, KmsAlg[F]] =
     for {
       client <- Resource.make(acquireKmsClient[F])(releaseKmsClient[F])
     } yield new KmsAlg[F] {
