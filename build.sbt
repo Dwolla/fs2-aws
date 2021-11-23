@@ -18,6 +18,7 @@ inThisBuild(List(
   startYear := Option(2018),
   resolvers += Resolver.sonatypeRepo("releases"),
 
+  githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "doc"))),
   githubWorkflowJavaVersions := Seq("adopt@1.8", "adopt@1.11"),
   githubWorkflowTargetTags ++= Seq("v*"),
   githubWorkflowPublishTargetBranches :=
