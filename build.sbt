@@ -65,7 +65,7 @@ lazy val fs2Utils = crossProject(JSPlatform, JVMPlatform)
       "co.fs2" %%% "fs2-core" % fs2Version,
       "org.scalameta" %%% "munit" % "0.7.29" % Test,
       "com.eed3si9n.expecty" %%% "expecty" % "0.15.4" % Test,
-      "org.typelevel" %%% "munit-cats-effect-3" % "1.0.6" % Test,
+      "org.typelevel" %%% "munit-cats-effect-3" % "1.0.7" % Test,
     )
   )
 
@@ -81,7 +81,7 @@ lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
         "co.fs2" %% "fs2-reactive-streams" % fs2Version,
         "org.typelevel" %% "cats-tagless-macros" % "0.14.0",
         "org.scala-lang.modules" %% "scala-collection-compat" % "2.6.0",
-        "software.amazon.awssdk" % "kms" % "2.17.95" % Provided,
+        "software.amazon.awssdk" % "kms" % "2.17.96" % Provided,
       )
     },
   )
