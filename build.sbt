@@ -1,5 +1,5 @@
 lazy val primaryName = "fs2-aws"
-lazy val fs2Version = "3.2.2"
+lazy val fs2Version = "3.2.3"
 
 inThisBuild(List(
   organization := "com.dwolla",
