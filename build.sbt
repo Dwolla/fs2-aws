@@ -14,7 +14,7 @@ inThisBuild(List(
       url("https://dwolla.com")
     )
   ),
-  crossScalaVersions := Seq("2.13.6", "2.12.15"),
+  crossScalaVersions := Seq("2.13.7", "2.12.15"),
   scalaVersion := crossScalaVersions.value.head,
   startYear := Option(2018),
   libraryDependencies ++= {
@@ -26,7 +26,8 @@ inThisBuild(List(
   },
   resolvers += Resolver.sonatypeRepo("releases"),
 
-  githubWorkflowJavaVersions := Seq("adopt@1.8", "adopt@1.11"),
+  githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "doc"))),
+  githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("11")),
   githubWorkflowTargetTags ++= Seq("v*"),
   githubWorkflowPublishTargetBranches :=
     Seq(RefPredicate.StartsWith(Ref.Tag("v"))),

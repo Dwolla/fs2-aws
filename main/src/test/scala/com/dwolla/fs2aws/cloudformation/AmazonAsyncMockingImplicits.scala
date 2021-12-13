@@ -9,6 +9,7 @@ import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
 
 import scala.reflect.ClassTag
+import scala.annotation.nowarn
 
 object AmazonAsyncMockingImplicits {
 
@@ -73,6 +74,7 @@ object AmazonAsyncMockingImplicits {
    */
   implicit class AmazonAsyncResults[Req <: AmazonWebServiceRequest : ClassTag, Res](responseMapping: Map[Req, Either[Exception, Res]]) {
 
+    @nowarn("""msg=the type test for pattern com\.amazonaws\.handlers\.AsyncHandler\[Req,Res\] cannot be checked at runtime because it has type parameters eliminated by erasure""")
     def completes(func: (Req, AsyncHandler[Req, Res]) => JFuture[Res]): Unit = {
       when(func(any[Req], any[AsyncHandler[Req, Res]])) thenAnswer ((invocation: InvocationOnMock) => {
         invocation.getArguments match {
