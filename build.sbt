@@ -1,5 +1,5 @@
 lazy val primaryName = "fs2-aws"
-lazy val fs2Version = "3.2.4"
+lazy val fs2Version = "3.2.5"
 
 inThisBuild(List(
   organization := "com.dwolla",
@@ -81,7 +81,7 @@ lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
         "co.fs2" %% "fs2-reactive-streams" % fs2Version,
         "org.typelevel" %% "cats-tagless-macros" % "0.14.0",
         "org.scala-lang.modules" %% "scala-collection-compat" % "2.6.0",
-        "software.amazon.awssdk" % "kms" % "2.17.133" % Provided,
+        "software.amazon.awssdk" % "kms" % "2.17.134" % Provided,
       )
     },
   )
