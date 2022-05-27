@@ -1,4 +1,3 @@
-lazy val primaryName = "fs2-aws"
 lazy val fs2Version = "3.2.7"
 
 inThisBuild(List(
@@ -18,7 +17,7 @@ inThisBuild(List(
   startYear := Option(2018),
   resolvers += Resolver.sonatypeRepo("releases"),
 
-  githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "doc"))),
+  githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "mimaReportBinaryIssues", "doc"))),
   githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("11")),
   githubWorkflowTargetTags ++= Seq("v*"),
   githubWorkflowPublishTargetBranches :=
@@ -34,6 +33,7 @@ inThisBuild(List(
       )
     )
   ),
+  localMimaPreviousVersions := Set("3.0.0-RC1"),
 ))
 
 lazy val compilerOptions = Seq(
@@ -54,27 +54,23 @@ lazy val compilerOptions = Seq(
   },
 )
 
-lazy val fs2Utils = crossProject(JSPlatform, JVMPlatform)
+lazy val `fs2-utils` = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
   .in(file("core"))
   .settings(compilerOptions: _*)
   .settings(
-    name := "fs2-utils",
     description := "Helpful utility functions for fs2 streams",
     libraryDependencies ++= Seq(
       "co.fs2" %%% "fs2-core" % fs2Version,
       "org.scalameta" %%% "munit" % "0.7.29" % Test,
       "com.eed3si9n.expecty" %%% "expecty" % "0.15.4" % Test,
       "org.typelevel" %%% "munit-cats-effect-3" % "1.0.7" % Test,
-    )
+    ),
   )
 
-lazy val fs2UtilsJVM = fs2Utils.jvm
-
-lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
+lazy val `fs2-aws-java-sdk2` = (project in file("aws-java-sdk2"))
   .settings(compilerOptions: _*)
   .settings(
-    name := primaryName + "-java-sdk2",
     description := "Utility classes for interacting with the V2 AWS Java SDKs from Scala using fs2",
     libraryDependencies ++= {
       Seq(
@@ -89,5 +85,6 @@ lazy val fs2Aws2Utils = (project in file("aws-java-sdk2"))
 lazy val `fs2-aws` = (project in file("."))
   .settings(
     publish / skip := true,
+    publishArtifact := false,
   )
-  .aggregate(fs2UtilsJVM, fs2Utils.js, fs2Aws2Utils)
+  .aggregate(`fs2-utils`.jvm, `fs2-utils`.js, `fs2-aws-java-sdk2`)
