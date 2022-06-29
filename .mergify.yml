@@ -9,7 +9,7 @@ queue_rules:
 pull_request_rules:
   - name: assign and label scala-steward's PRs
     conditions:
-      - author=scala-steward
+      - author=dwolla-oss-scala-steward[bot]
     actions:
       request_reviews:
         users: [bpholt]
@@ -24,7 +24,7 @@ pull_request_rules:
       update:
   - name: merge scala-steward's PRs
     conditions:
-      - author=scala-steward
+      - author=dwolla-oss-scala-steward[bot]
       - status-success=Build and Test (ubuntu-latest, 2.13.8, temurin@8)
       - status-success=Build and Test (ubuntu-latest, 2.13.8, temurin@11)
       - status-success=Build and Test (ubuntu-latest, 2.12.15, temurin@8)
