@@ -7,4 +7,4 @@ addSbtPlugin("com.codecommit" % "sbt-github-actions" % "0.14.2")
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.14")
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "1.1.1")
 
-addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta39")
+addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta40")
