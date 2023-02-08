@@ -1,4 +1,4 @@
-lazy val fs2Version = "3.5.0"
+lazy val fs2Version = "3.6.0"
 
 inThisBuild(List(
   organization := "com.dwolla",
