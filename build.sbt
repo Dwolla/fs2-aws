@@ -76,8 +76,8 @@ lazy val `fs2-aws-java-sdk2` = (project in file("aws-java-sdk2"))
       Seq(
         "co.fs2" %% "fs2-reactive-streams" % fs2Version,
         "org.typelevel" %% "cats-tagless-macros" % "0.14.0",
-        "org.scala-lang.modules" %% "scala-collection-compat" % "2.9.0",
-        "software.amazon.awssdk" % "kms" % "2.20.33" % Provided,
+        "org.scala-lang.modules" %% "scala-collection-compat" % "2.10.0",
+        "software.amazon.awssdk" % "kms" % "2.20.57" % Provided,
       )
     },
   )
