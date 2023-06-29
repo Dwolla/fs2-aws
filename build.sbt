@@ -1,63 +1,33 @@
 lazy val fs2Version = "3.7.0"
 
-inThisBuild(List(
-  organization := "com.dwolla",
-  homepage := Some(url("https://github.com/Dwolla/fs2-aws")),
-  licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-  developers := List(
-    Developer(
-      "bpholt",
-      "Brian Holt",
-      "bholt+github@dwolla.com",
-      url("https://dwolla.com")
-    )
-  ),
-  crossScalaVersions := Seq("2.13.10", "2.12.17"),
-  scalaVersion := crossScalaVersions.value.head,
-  startYear := Option(2018),
-  resolvers += Resolver.sonatypeRepo("releases"),
-
-  githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "mimaReportBinaryIssues", "doc"))),
-  githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("11")),
-  githubWorkflowTargetTags ++= Seq("v*"),
-  githubWorkflowPublishTargetBranches :=
-    Seq(RefPredicate.StartsWith(Ref.Tag("v"))),
-  githubWorkflowPublish := Seq(
-    WorkflowStep.Sbt(
-      List("ci-release"),
-      env = Map(
-        "PGP_PASSPHRASE" -> "${{ secrets.PGP_PASSPHRASE }}",
-        "PGP_SECRET" -> "${{ secrets.PGP_SECRET }}",
-        "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
-        "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}"
-      )
-    )
-  ),
-  localMimaPreviousVersions := Set("3.0.0-RC1"),
-))
-
-lazy val compilerOptions = Seq(
-  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
-  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-  Compile / scalacOptions ++= {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, n)) if n >= 13 => "-Ymacro-annotations" :: Nil
-      case _ => Nil
-    }
-  },
-
-  libraryDependencies ++= {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, n)) if n >= 13 => Nil
-      case _ => compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full) :: Nil
-    }
-  },
+ThisBuild / organization := "com.dwolla"
+ThisBuild / homepage := Some(url("https://github.com/Dwolla/fs2-aws"))
+ThisBuild / licenses += ("MIT", url("https://opensource.org/licenses/MIT"))
+ThisBuild / developers := List(
+  Developer(
+    "bpholt",
+    "Brian Holt",
+    "bholt+github@dwolla.com",
+    url("https://dwolla.com")
+  )
 )
+ThisBuild / tlBaseVersion := "3.0"
+ThisBuild / crossScalaVersions := Seq("2.13.10", "2.12.17")
+ThisBuild / scalaVersion := crossScalaVersions.value.head
+ThisBuild / startYear := Option(2018)
+ThisBuild / tlMimaPreviousVersions ++= Set("3.0.0-RC1")
+
+ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "mimaReportBinaryIssues", "doc")))
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("11"))
+ThisBuild / mergifyRequiredJobs ++= Seq("validate-steward")
+ThisBuild / mergifyStewardConfig ~= { _.map(_.copy(
+  author = "dwolla-oss-scala-steward[bot]",
+  mergeMinors = true,
+))}
 
 lazy val `fs2-utils` = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
   .in(file("core"))
-  .settings(compilerOptions: _*)
   .settings(
     description := "Helpful utility functions for fs2 streams",
     libraryDependencies ++= Seq(
@@ -68,8 +38,8 @@ lazy val `fs2-utils` = crossProject(JSPlatform, JVMPlatform)
     ),
   )
 
-lazy val `fs2-aws-java-sdk2` = (project in file("aws-java-sdk2"))
-  .settings(compilerOptions: _*)
+lazy val `fs2-aws-java-sdk2` = project
+  .in(file("aws-java-sdk2"))
   .settings(
     description := "Utility classes for interacting with the V2 AWS Java SDKs from Scala using fs2",
     libraryDependencies ++= {
@@ -82,9 +52,7 @@ lazy val `fs2-aws-java-sdk2` = (project in file("aws-java-sdk2"))
     },
   )
 
-lazy val `fs2-aws` = (project in file("."))
-  .settings(
-    publish / skip := true,
-    publishArtifact := false,
-  )
+lazy val `fs2-aws` = project
+  .in(file("."))
   .aggregate(`fs2-utils`.jvm, `fs2-utils`.js, `fs2-aws-java-sdk2`)
+  .enablePlugins(NoPublishPlugin)
