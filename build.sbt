@@ -12,10 +12,13 @@ ThisBuild / developers := List(
   )
 )
 ThisBuild / tlBaseVersion := "3.0"
-ThisBuild / crossScalaVersions := Seq("2.13.11", "2.12.18")
+ThisBuild / crossScalaVersions := Seq("3.3.0", "2.13.11", "2.12.18")
 ThisBuild / scalaVersion := crossScalaVersions.value.head
 ThisBuild / startYear := Option(2018)
-ThisBuild / tlMimaPreviousVersions ++= Set("3.0.0-RC1")
+ThisBuild / tlMimaPreviousVersions ++= {
+  if (tlIsScala3.value) Set.empty
+  else Set("3.0.0-RC1")
+}
 
 ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "mimaReportBinaryIssues", "doc")))
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("11"))
@@ -45,7 +48,7 @@ lazy val `fs2-aws-java-sdk2` = project
     libraryDependencies ++= {
       Seq(
         "co.fs2" %% "fs2-reactive-streams" % fs2Version,
-        "org.typelevel" %% "cats-tagless-macros" % "0.15.0",
+        "org.typelevel" %% "cats-tagless-core" % "0.15.0",
         "org.scala-lang.modules" %% "scala-collection-compat" % "2.11.0",
         "software.amazon.awssdk" % "kms" % "2.20.95" % Provided,
       )

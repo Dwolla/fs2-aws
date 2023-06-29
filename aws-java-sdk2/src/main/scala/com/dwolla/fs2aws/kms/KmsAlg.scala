@@ -1,9 +1,9 @@
 package com.dwolla.fs2aws.kms
 
 import cats.effect.*
-import cats.implicits.*
+import cats.syntax.all.*
 import cats.tagless.*
-import cats.tagless.aop.Instrument
+import cats.tagless.aop.*
 import cats.~>
 import com.dwolla.fs2aws.AwsEval.*
 import software.amazon.awssdk.core.SdkBytes
@@ -18,7 +18,19 @@ trait KmsAlg[F[_]] {
 }
 
 object KmsAlg {
-  implicit val instrument: Instrument[KmsAlg] = Derive.instrument
+  implicit def instrumentForKmsAlg(): Instrument[KmsAlg] = instrument
+
+  // do this manually until cats-tagless-macros are published for Scala 3
+  private val instrument = new Instrument[KmsAlg] {
+    override def instrument[F[_]](af: KmsAlg[F]): KmsAlg[Instrumentation[F, *]] = new KmsAlg[Instrumentation[F, *]] {
+      override def decrypt(string: String): Instrumentation[F, String] =
+        Instrumentation(af.decrypt(string), "KmsAlg", "decrypt")
+    }
+
+    override def mapK[F[_], G[_]](af: KmsAlg[F])(fk: F ~> G): KmsAlg[G] = new KmsAlg[G] {
+      override def decrypt(string: String): G[String] = fk(af.decrypt(string))
+    }
+  }
 
   private def acquireKmsClient[F[_] : Sync]: F[KmsAsyncClient] =
     Sync[F].delay(KmsAsyncClient.builder().build())
@@ -41,20 +53,16 @@ object KmsAlg {
 
     }
 
+  @deprecated("only kept for binary compatibility purposes", "3.0.0-RC2")
+  def mapK[F[_], G[_]](alg: KmsAlg[F], fk: F ~> G): KmsAlg[G] = instrumentForKmsAlg().mapK(alg)(fk)
 
   @deprecated("only kept for binary compatibility purposes", "3.0.0-RC2")
-  def instrumentForKmsAlg(): Instrument[KmsAlg] = instrument
-
-  @deprecated("only kept for binary compatibility purposes", "3.0.0-RC2")
-  def mapK[F[_], G[_]](alg: KmsAlg[F], fk: F ~> G): KmsAlg[G] = instrument.mapK(alg)(fk)
-
-  @deprecated("only kept for binary compatibility purposes", "3.0.0-RC2")
-  def functorKForKmsAlg(): FunctorK[KmsAlg] = instrument
+  def functorKForKmsAlg(): FunctorK[KmsAlg] = instrumentForKmsAlg()
 
   @deprecated("only kept for binary compatibility purposes", "3.0.0-RC2")
   object fullyRefined {
     @deprecated("only kept for binary compatibility purposes", "3.0.0-RC2")
-    implicit val functorKForFullyRefinedKmsAlg: FunctorK[_root_.com.dwolla.fs2aws.kms.KmsAlg] = functorKForKmsAlg
+    implicit val functorKForFullyRefinedKmsAlg: FunctorK[_root_.com.dwolla.fs2aws.kms.KmsAlg] = functorKForKmsAlg()
 
     @deprecated("only kept for binary compatibility purposes", "3.0.0-RC2")
     object autoDerive {
