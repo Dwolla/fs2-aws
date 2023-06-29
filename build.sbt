@@ -12,7 +12,7 @@ ThisBuild / developers := List(
   )
 )
 ThisBuild / tlBaseVersion := "3.0"
-ThisBuild / crossScalaVersions := Seq("2.13.10", "2.12.18")
+ThisBuild / crossScalaVersions := Seq("2.13.11", "2.12.18")
 ThisBuild / scalaVersion := crossScalaVersions.value.head
 ThisBuild / startYear := Option(2018)
 ThisBuild / tlMimaPreviousVersions ++= Set("3.0.0-RC1")
