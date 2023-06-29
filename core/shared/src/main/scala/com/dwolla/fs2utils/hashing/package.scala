@@ -1,6 +1,6 @@
 package com.dwolla.fs2utils
 
-import fs2._
+import fs2.*
 
 package object hashing {
   implicit class ByteArrayToHexString(as: Array[Byte]) {

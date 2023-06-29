@@ -1,13 +1,13 @@
 package com.dwolla.fs2utils.hashing
 
-import cats.effect._
-import cats.implicits._
+import cats.effect.*
+import cats.implicits.*
 import com.eed3si9n.expecty.Expecty.expect
-import fs2._
+import fs2.*
 import munit.CatsEffectSuite
 
 import java.security.MessageDigest
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 class Sha256PipeSpec extends CatsEffectSuite {
 

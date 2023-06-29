@@ -1,7 +1,7 @@
 package com.dwolla.fs2utils
 
 import cats.effect.IO
-import fs2._
+import fs2.*
 import com.eed3si9n.expecty.Expecty.expect
 import munit.CatsEffectSuite
 

@@ -1,8 +1,8 @@
 package com.dwolla.fs2utils
 
-import cats._
-import cats.implicits._
-import fs2._
+import cats.*
+import cats.syntax.all.*
+import fs2.*
 
 object Pagination {
   private sealed trait PageIndicator[S]

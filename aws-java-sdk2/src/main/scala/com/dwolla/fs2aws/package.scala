@@ -2,12 +2,12 @@ package com.dwolla.fs2aws
 
 import java.util.concurrent.{CancellationException, CompletableFuture, CompletionException}
 
-import cats.effect._
-import cats.implicits._
-import fs2._
+import cats.effect.*
+import cats.syntax.all.*
+import fs2.*
 import fs2.interop.reactivestreams.fromPublisher
 import org.reactivestreams.Publisher
-import AwsEval._
+import AwsEval.*
 
 object AwsEval extends AwsEval {
   private[fs2aws] def cfToF[F[_]] = new PartialCompletableFutureToF[F]
@@ -25,7 +25,7 @@ class PartiallyAppliedFromPublisherF[F[_]] {
 }
 
 class PartiallyAppliedFromPublisherFRes[F[_], Res](publisher: Publisher[Res]) {
-  import scala.jdk.CollectionConverters._
+  import scala.jdk.CollectionConverters.*
 
   private def toStream[T](res: Res => java.lang.Iterable[T]): Res => Stream[F, T] =
     res andThen (_.asScala) andThen Chunk.iterable andThen Stream.chunk

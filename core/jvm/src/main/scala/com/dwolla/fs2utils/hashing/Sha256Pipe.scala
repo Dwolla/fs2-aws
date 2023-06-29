@@ -1,7 +1,7 @@
 package com.dwolla.fs2utils.hashing
 
-import cats.effect._
-import fs2._
+import cats.effect.*
+import fs2.*
 import scodec.bits.ByteVector
 
 import java.security.MessageDigest
