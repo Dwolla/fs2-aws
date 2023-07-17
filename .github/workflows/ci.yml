@@ -222,5 +222,5 @@ jobs:
       - name: Submit Dependencies
         uses: scalacenter/sbt-dependency-submission@v2
         with:
-          modules-ignore: fs2-aws
-          configs-ignore: test scala-tool scala-doc-tool
+          modules-ignore: fs2-aws_3 fs2-aws_2.13 fs2-aws_2.12
+          configs-ignore: test scala-tool scala-doc-tool test-internal
