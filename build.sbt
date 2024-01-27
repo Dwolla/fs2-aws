@@ -1,4 +1,4 @@
-lazy val fs2Version = "3.8.0"
+lazy val fs2Version = "3.9.4"
 
 ThisBuild / organization := "com.dwolla"
 ThisBuild / homepage := Some(url("https://github.com/Dwolla/fs2-aws"))
@@ -14,7 +14,7 @@ ThisBuild / developers := List(
 ThisBuild / tlBaseVersion := "3.0"
 ThisBuild / tlCiReleaseBranches := Seq("3.x")
 ThisBuild / tlSonatypeUseLegacyHost := true
-ThisBuild / crossScalaVersions := Seq("3.3.0", "2.13.12", "2.12.18")
+ThisBuild / crossScalaVersions := Seq("3.3.1", "2.13.12", "2.12.18")
 ThisBuild / scalaVersion := crossScalaVersions.value.head
 ThisBuild / startYear := Option(2018)
 ThisBuild / tlMimaPreviousVersions ++= {
@@ -37,9 +37,9 @@ lazy val `fs2-utils` = crossProject(JSPlatform, JVMPlatform)
     description := "Helpful utility functions for fs2 streams",
     libraryDependencies ++= Seq(
       "co.fs2" %%% "fs2-core" % fs2Version,
-      "org.scalameta" %%% "munit" % "1.0.0-M8" % Test,
+      "org.scalameta" %%% "munit" % "1.0.0-M10" % Test,
       "com.eed3si9n.expecty" %%% "expecty" % "0.16.0" % Test,
-      "org.typelevel" %%% "munit-cats-effect" % "2.0.0-M3" % Test,
+      "org.typelevel" %%% "munit-cats-effect" % "2.0.0-M4" % Test,
     ),
   )
 
@@ -52,7 +52,7 @@ lazy val `fs2-aws-java-sdk2` = project
         "co.fs2" %% "fs2-reactive-streams" % fs2Version,
         "org.typelevel" %% "cats-tagless-core" % "0.15.0",
         "org.scala-lang.modules" %% "scala-collection-compat" % "2.11.0",
-        "software.amazon.awssdk" % "kms" % "2.20.134" % Provided,
+        "software.amazon.awssdk" % "kms" % "2.20.162" % Provided,
       )
     },
   )
