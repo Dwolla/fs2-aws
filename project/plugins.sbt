@@ -7,4 +7,4 @@ addSbtPlugin("org.typelevel" % "sbt-typelevel-mergify" % "0.5.0")
 addSbtPlugin("org.typelevel" % "sbt-typelevel-no-publish" % "0.5.0")
 
 
-addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta42")
+addSbtPlugin("org.scalablytyped.converter" % "sbt-converter" % "1.0.0-beta43")
