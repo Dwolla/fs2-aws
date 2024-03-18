@@ -1,4 +1,4 @@
-lazy val fs2Version = "3.9.4"
+lazy val fs2Version = "3.10.0"
 
 ThisBuild / organization := "com.dwolla"
 ThisBuild / homepage := Some(url("https://github.com/Dwolla/fs2-aws"))
