@@ -50,7 +50,7 @@ lazy val `fs2-aws-java-sdk2` = project
     libraryDependencies ++= {
       Seq(
         "co.fs2" %% "fs2-reactive-streams" % fs2Version,
-        "org.typelevel" %% "cats-tagless-core" % "0.15.0",
+        "org.typelevel" %% "cats-tagless-core" % "0.16.0",
         "org.scala-lang.modules" %% "scala-collection-compat" % "2.11.0",
         "software.amazon.awssdk" % "kms" % "2.20.162" % Provided,
       )
