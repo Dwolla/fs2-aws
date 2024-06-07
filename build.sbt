@@ -25,10 +25,10 @@ ThisBuild / tlMimaPreviousVersions ++= {
 ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "mimaReportBinaryIssues", "doc")))
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("11"))
 ThisBuild / mergifyRequiredJobs ++= Seq("validate-steward")
-ThisBuild / mergifyStewardConfig ~= { _.map(_.copy(
-  author = "dwolla-oss-scala-steward[bot]",
-  mergeMinors = true,
-))}
+ThisBuild / mergifyStewardConfig ~= { _.map {
+  _.withAuthor("dwolla-oss-scala-steward[bot]")
+    .withMergeMinors(true)
+}}
 
 lazy val `fs2-utils` = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
