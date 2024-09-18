@@ -17,10 +17,6 @@ ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / crossScalaVersions := Seq("3.3.3", "2.13.14", "2.12.20")
 ThisBuild / scalaVersion := crossScalaVersions.value.head
 ThisBuild / startYear := Option(2018)
-ThisBuild / tlMimaPreviousVersions ++= {
-  if (tlIsScala3.value) Set.empty
-  else Set("3.0.0-RC1")
-}
 
 ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "mimaReportBinaryIssues", "doc")))
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"), JavaSpec.temurin("11"))
