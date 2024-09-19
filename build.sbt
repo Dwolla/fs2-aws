@@ -15,7 +15,6 @@ ThisBuild / tlBaseVersion := "3.0"
 ThisBuild / tlCiReleaseBranches := Seq("3.x")
 ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / crossScalaVersions := Seq("3.3.3", "2.13.14", "2.12.20")
-ThisBuild / scalaVersion := crossScalaVersions.value.head
 ThisBuild / startYear := Option(2018)
 
 ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "mimaReportBinaryIssues", "doc")))
@@ -39,7 +38,5 @@ lazy val `fs2-utils` = crossProject(JSPlatform, JVMPlatform)
     ),
   )
 
-lazy val `fs2-aws` = project
-  .in(file("."))
+lazy val `fs2-aws` = tlCrossRootProject
   .aggregate(`fs2-utils`.jvm, `fs2-utils`.js)
-  .enablePlugins(NoPublishPlugin)
