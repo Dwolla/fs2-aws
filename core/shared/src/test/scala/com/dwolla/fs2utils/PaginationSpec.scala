@@ -12,7 +12,7 @@ class PaginationSpec extends CatsEffectSuite {
       val offset = nextToken.fold(0)(identity)
       val ints = (3 * offset) until (3 * offset + 3)
 
-      IO.pure((Chunk.seq(ints), if (offset < 3) Option(offset + 1) else None))
+      IO.pure((Chunk.from(ints), if (offset < 3) Option(offset + 1) else None))
     }
 
   test("Pagination should unfold the given thing") {
