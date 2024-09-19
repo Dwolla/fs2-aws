@@ -13,7 +13,7 @@ ThisBuild / developers := List(
 )
 ThisBuild / tlBaseVersion := "3.0"
 ThisBuild / tlCiReleaseBranches := Seq("3.x")
-ThisBuild / tlSonatypeUseLegacyHost := true
+ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeLegacy
 ThisBuild / crossScalaVersions := Seq("3.3.3", "2.13.14", "2.12.20")
 ThisBuild / startYear := Option(2018)
 
