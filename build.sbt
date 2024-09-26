@@ -33,7 +33,6 @@ lazy val `fs2-utils` = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= Seq(
       "co.fs2" %%% "fs2-core" % fs2Version,
       "org.scalameta" %%% "munit" % "1.0.2" % Test,
-      "com.eed3si9n.expecty" %%% "expecty" % "0.16.0" % Test,
       "org.typelevel" %%% "munit-cats-effect" % "2.0.0" % Test,
     ),
   )
