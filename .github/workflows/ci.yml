@@ -86,7 +86,7 @@ jobs:
 
       - name: Upload target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/3.x')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.scala }}-${{ matrix.project }}
           path: targets.tar
@@ -136,7 +136,7 @@ jobs:
         run: sbt +update
 
       - name: Download target directories (3, fs2-awsJS)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-3-fs2-awsJS
 
@@ -146,7 +146,7 @@ jobs:
           rm targets.tar
 
       - name: Download target directories (3, fs2-awsJVM)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-3-fs2-awsJVM
 
@@ -156,7 +156,7 @@ jobs:
           rm targets.tar
 
       - name: Download target directories (2.13, fs2-awsJS)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-2.13-fs2-awsJS
 
@@ -166,7 +166,7 @@ jobs:
           rm targets.tar
 
       - name: Download target directories (2.13, fs2-awsJVM)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-2.13-fs2-awsJVM
 
@@ -176,7 +176,7 @@ jobs:
           rm targets.tar
 
       - name: Download target directories (2.12, fs2-awsJS)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-2.12-fs2-awsJS
 
@@ -186,7 +186,7 @@ jobs:
           rm targets.tar
 
       - name: Download target directories (2.12, fs2-awsJVM)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-2.12-fs2-awsJVM
 
