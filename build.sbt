@@ -13,7 +13,7 @@ ThisBuild / developers := List(
 )
 ThisBuild / tlBaseVersion := "3.0"
 ThisBuild / tlCiReleaseBranches := Seq("3.x")
-ThisBuild / crossScalaVersions := Seq("3.3.8", "2.13.18", "2.12.21")
+ThisBuild / crossScalaVersions := Seq("3.8.4", "2.13.18", "2.12.21")
 ThisBuild / startYear := Option(2018)
 
 ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "mimaReportBinaryIssues", "doc")))
