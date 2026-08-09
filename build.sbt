@@ -31,7 +31,7 @@ lazy val `fs2-utils` = crossProject(JSPlatform, JVMPlatform)
     description := "Helpful utility functions for fs2 streams",
     libraryDependencies ++= Seq(
       "co.fs2" %%% "fs2-core" % fs2Version,
-      "org.scalameta" %%% "munit" % "1.3.3" % Test,
+      "org.scalameta" %%% "munit" % "1.3.5" % Test,
       "com.eed3si9n.expecty" %%% "expecty" % "0.17.1" % Test,
       "org.typelevel" %%% "munit-cats-effect" % "2.2.0" % Test,
     ),
